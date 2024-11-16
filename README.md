@@ -1,1 +1,1 @@
-# blazium-lobby-sdk
+# Blazium lobby
