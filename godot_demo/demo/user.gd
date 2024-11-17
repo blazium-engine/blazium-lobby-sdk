@@ -6,8 +6,6 @@ extends HBoxContainer
 @onready var logs_text := $Logs
 
 func _ready() -> void:
-	lobby._create("demo_game", "ws://localhost:8080/connect")
-
 	lobby.lobby_created.connect(lobby_created)
 	lobby.lobby_joined.connect(lobby_joined)
 	lobby.lobby_sealed.connect(lobby_sealed)
@@ -21,6 +19,8 @@ func _ready() -> void:
 	lobby.peer_unready.connect(peer_unready)
 	lobby.append_error.connect(append_error)
 	lobby.append_log.connect(append_log)
+
+	lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
 
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
@@ -44,10 +44,10 @@ func peer_joined(lobby_peer: String):
 func peer_left(lobby_peer: String):
 	print("Callback: %s peer_left %s" % [get_index(), lobby_peer])
 	
-func lobby_view(host: String, sealed: bool, lobby_peers: Array[BlaziumLobby.Peer]):
+func lobby_view(host: String, sealed: bool, _lobby_peer_ids: Array[String], lobby_peer_names: Array[String], _lobby_peer_readys: Array[bool]):
 	var print_result = "Callback: %s lobby_view: host %s sealed %s peers: " % [get_index(), host, sealed]
-	for peer in lobby_peers:
-		print_result += "( id: %s name: %s ready: %s )" % [peer.id, peer.name, peer.ready]
+	for peer in lobby_peer_names:
+		print_result += " " % [peer]
 	print(print_result)
 
 func peer_ready(lobby_peer: String):

@@ -29,7 +29,7 @@ signal append_error(logs: String)  # Emitted to log errors or unexpected behavio
 # @param gameID The unique identifier for the game.
 # @param lobby_url The URL of the lobby server. Default is "wss://lobby.blazium.app/connect".
 # @param peer_name The display name of the peer. Default is "Blaze".
-func _create(gameID: String, lobby_url: String = "wss://lobby.blazium.app/connect") -> void:
+func connect_to_lobby(gameID: String, lobby_url: String = "wss://lobby.blazium.app/connect") -> void:
 	var err = _socket.connect_to_url(lobby_url + "?gameID=" + gameID)
 	initialized = true
 	if err != OK:
