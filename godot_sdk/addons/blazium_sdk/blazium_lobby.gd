@@ -90,9 +90,9 @@ func _receive_data(data: Dictionary):
 
 	match command:
 		"lobby_created":
-			lobby_created.emit(data["data"]["lobby_name"])
+			lobby_created.emit(data["data"])
 		"joined_lobby":
-			lobby_joined.emit(data["data"]["lobby_name"])
+			lobby_joined.emit(data["data"])
 		"lobby_left":
 			lobby_left.emit()
 		"lobby_sealed":
