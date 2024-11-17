@@ -5,11 +5,6 @@ extends Node
 # A node-based SDK to manage multiplayer lobbies using WebSocket for communication.
 # Features include creating, joining, listing, and managing lobbies and peers.
 
-class Peer:
-	var id: String
-	var name: String
-	var ready: bool
-
 # WebSocket peer for handling network communication.
 var _socket := WebSocketPeer.new()
 var initialized := false  # Tracks whether the WebSocket connection is initialized.
@@ -24,10 +19,10 @@ signal peer_joined(peer: String)
 signal peer_left(peer: String)
 signal peer_ready(peer: String)
 signal peer_unready(peer: String)
-signal lobby_view(host: String, sealed: bool, peers: Array[Peer])
+signal lobby_view(host: String, sealed: bool, peer_ids: Array[String], peer_names: Array[String], peer_ready: Array[bool])
 signal lobby_list(lobbies: Array[String])
 
-signal append_log(logs: String)  # Emitted to log normal activity.
+signal append_log(command: String, logs: String)  # Emitted to log normal activity.
 signal append_error(logs: String)  # Emitted to log errors or unexpected behavior.
 
 # Initializes the WebSocket connection.
@@ -86,7 +81,7 @@ func unseal_lobby():
 func _receive_data(data: Dictionary):
 	var message: String = data["message"]
 	var command: String = data["command"]
-	append_log.emit(message)
+	append_log.emit(command, message)
 
 	match command:
 		"lobby_created":
@@ -104,14 +99,14 @@ func _receive_data(data: Dictionary):
 		"peer_unready":
 			peer_unready.emit(data["data"])
 		"lobby_view":
-			var arr: Array[Peer] = []
+			var ids: Array[String] = []
+			var names: Array[String] = []
+			var readys: Array[bool] = []
 			for peer_json in data["data"]["peers"]:
-				var new_peer := Peer.new()
-				new_peer.id = peer_json["peer_id"]
-				new_peer.name = peer_json["peer_name"]
-				new_peer.ready = peer_json["peer_ready"]
-				arr.append(new_peer)
-			lobby_view.emit(data["data"]["lobby"]["host"], data["data"]["lobby"]["sealed"], arr)
+				ids.push_back(peer_json["peer_id"])
+				names.push_back(peer_json["peer_name"])
+				readys.push_back(peer_json["peer_ready"])
+			lobby_view.emit(data["data"]["lobby"]["host"], data["data"]["lobby"]["sealed"], ids, names, readys)
 		"lobby_list":
 			var arr: Array[String] = []
 			arr.assign(data["data"])

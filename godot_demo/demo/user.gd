@@ -22,8 +22,8 @@ func _ready() -> void:
 	lobby.append_error.connect(append_error)
 	lobby.append_log.connect(append_log)
 
-func append_log(logs: String):
-	logs_text.text = logs
+func append_log(command: String, logs: String):
+	logs_text.text = command + " " + logs
 
 func append_error(logs: String):
 	logs_text.text = logs

@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://8kf325oa7qos"]
+[gd_scene load_steps=2 format=3 uid="uid://8kf325oa7qos"]
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
-[ext_resource type="Script" path="res://addons/blazium_sdk/blazium_lobby.gd" id="2_rrb7g"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -23,6 +22,7 @@ layout_mode = 2
 selected = 0
 item_count = 12
 popup/item_0/text = "create_lobby"
+popup/item_0/id = 0
 popup/item_1/text = "join_lobby"
 popup/item_1/id = 1
 popup/item_2/text = "leave_lobby"
@@ -57,7 +57,6 @@ size_flags_horizontal = 3
 text = "Logs:"
 editable = false
 
-[node name="BlaziumLobby" type="Node" parent="."]
-script = ExtResource("2_rrb7g")
+[node name="BlaziumLobby" type="BlaziumLobby" parent="."]
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
