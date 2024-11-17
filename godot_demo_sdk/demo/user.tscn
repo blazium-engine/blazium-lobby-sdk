@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://8kf325oa7qos"]
+
+[ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
+[ext_resource type="Script" path="res://addons/blazium_sdk/blazium_lobby.gd" id="2_nnw01"]
+
+[node name="User" type="HBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_iyd0j")
+
+[node name="LabelMessage" type="Label" parent="."]
+layout_mode = 2
+text = "Message:"
+
+[node name="Message" type="LineEdit" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Command:"
+
+[node name="CommandToggle" type="OptionButton" parent="."]
+layout_mode = 2
+selected = 0
+item_count = 12
+popup/item_0/text = "create_lobby"
+popup/item_1/text = "join_lobby"
+popup/item_1/id = 1
+popup/item_2/text = "leave_lobby"
+popup/item_2/id = 2
+popup/item_3/text = "list_lobby"
+popup/item_3/id = 3
+popup/item_4/text = "view_lobby"
+popup/item_4/id = 4
+popup/item_5/text = "lobby_ready"
+popup/item_5/id = 10
+popup/item_6/text = "lobby_unready"
+popup/item_6/id = 11
+popup/item_7/text = "kick_peer"
+popup/item_7/id = 6
+popup/item_8/text = "seal_lobby"
+popup/item_8/id = 7
+popup/item_9/text = "unseal_lobby"
+popup/item_9/id = 8
+popup/item_10/text = "lobby_data"
+popup/item_10/id = 5
+popup/item_11/text = "data_to"
+popup/item_11/id = 9
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+text = "Execute"
+
+[node name="Logs" type="LineEdit" parent="."]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Logs:"
+editable = false
+
+[node name="BlaziumLobby" type="Node" parent="."]
+script = ExtResource("2_nnw01")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
