@@ -7,6 +7,17 @@ extends Node
 var _socket := WebSocketPeer.new()
 var initialized := false
 
+class LobbyResponse:
+	var result: Dictionary
+	signal finished()
+
+class LobbyPeer:
+	var id: String
+	var name: String
+	var ready: bool
+
+var _commands := {}
+
 ## Signal generated after a lobby is created.
 signal lobby_created(lobby: String)
 ## Signal generated after you joint a lobby.
@@ -45,11 +56,27 @@ func connect_to_lobby(gameID: String, lobby_url: String = "wss://lobby.blazium.a
 		return
 	append_log.emit("connect_to_lobby", "Connected to lobby server at " + _socket.get_requested_url())
 
+var counter := 0
+
+func _increment_counter() -> int:
+	counter += 1
+	return counter
+
+func _send_data_with_id(command: Dictionary) -> BlaziumLobby.LobbyResponse:
+	var id = _increment_counter()
+	if !command.has("data"):
+		command["data"] = {}
+	command["data"]["id"] = id
+	_send_data(command)
+	var response := BlaziumLobby.LobbyResponse.new()
+	_commands[id] = response
+	return response
+	
 
 ## Create a lobby and become host. If you are already in a lobby, you cannot create one. You need to leave first.
 ## Will generate either error signal or lobby_created.
-func create_lobby():
-	_send_data({"command": "create_lobby"})
+func create_lobby() -> BlaziumLobby.LobbyResponse:
+	return _send_data_with_id({"command": "create_lobby"})
 
 ## Join a lobby. If you are already in a lobby, you cannot join another one. You need to leave first.
 ## Will generate either error signal or lobby_joined.
