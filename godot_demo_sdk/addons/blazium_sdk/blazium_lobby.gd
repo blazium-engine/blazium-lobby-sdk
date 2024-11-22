@@ -5,9 +5,8 @@ extends Node
 ## A node used to connect to a lobby server. It can be used to do matchmaking. You care do operations such as create lobbys, join lobbys, etc.
 
 var _socket := WebSocketPeer.new()
-var initialized := false
 
-enum _CommandType{CREATE_LOBBY, JOIN_LOBBY, KICK_PEER, LOBBY_VIEW, LOBBY_LIST, LEAVE_LOBBY}
+enum _CommandType{CREATE_LOBBY, SIMPLE_REQUEST, LOBBY_VIEW, LOBBY_LIST}
 
 class CreateLobby:
 	class Response:
@@ -21,21 +20,10 @@ class CreateLobby:
 			return _lobby_name
 	signal finished(response: Response)
 
-class JoinLobby:
+class LobbyResponse:
 	class Response:
 		var _error: String
 		var _lobby_name: String
-		func has_error() -> bool:
-			return _error != ""
-		func get_error() -> String:
-			return _error
-		func get_lobby_name() -> String:
-			return _lobby_name
-	signal finished(response: Response)
-
-class LeaveLobby:
-	class Response:
-		var _error: String
 		func has_error() -> bool:
 			return _error != ""
 		func get_error() -> String:
@@ -69,18 +57,6 @@ class ViewLobby:
 			return _lobby_info
 	signal finished(response: Response)
 
-class KickPeer:
-	class Response:
-		var _error: String
-		var _lobby_name: String
-		func has_error() -> bool:
-			return _error != ""
-		func get_error() -> String:
-			return _error
-		func get_lobby_name() -> String:
-			return _lobby_name
-	signal finished(response: Response)
-
 class LobbyInfo:
 	var host: String
 	var max_players: int
@@ -93,6 +69,12 @@ class LobbyPeer:
 
 var _commands := {}
 
+## Signal generated after the lobby is created by you.
+signal lobby_created(lobby: String)
+## Signal generated after the lobby is joined by you.
+signal lobby_joined(lobby: String)
+## Signal generated after the lobby is left by you.
+signal lobby_left()
 ## Signal generated after the host seals the lobby.
 signal lobby_sealed()
 ## Signal generated after the host unseals the lobby.
@@ -140,53 +122,53 @@ func _send_data_with_id(command: Dictionary, response, command_type: _CommandTyp
 	
 
 ## Create a lobby and become host. If you are already in a lobby, you cannot create one. You need to leave first.
-func create_lobby(max_players: int = 4, password: String = "") -> BlaziumLobby.CreateLobby:
+func create_lobby(max_players: int = 4, password: String = "") -> CreateLobby:
 	return _send_data_with_id({"command": "create_lobby", "data": {"max_players": max_players, "password": password}}, CreateLobby.new(), _CommandType.CREATE_LOBBY)
 
 ## Join a lobby. If you are already in a lobby, you cannot join another one. You need to leave first.
-func join_lobby(lobby: String, password: String = "") -> BlaziumLobby.JoinLobby:
-	return _send_data_with_id({"command": "join_lobby", "data": {"lobby": lobby, "password": password}}, JoinLobby.new(), _CommandType.JOIN_LOBBY)
+func join_lobby(lobby: String, password: String = "") -> LobbyResponse:
+	return _send_data_with_id({"command": "join_lobby", "data": {"lobby": lobby, "password": password}}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 ## Kick a peer. You need to be host to do this operation.
 ## Will generate either error signal or peer_left.
-func kick_peer(peer_id: String) -> BlaziumLobby.KickPeer:
-	return _send_data_with_id({"command": "kick_peer", "data": {"peer": peer_id}}, KickPeer.new(), _CommandType.KICK_PEER)
+func kick_peer(peer_id: String) -> LobbyResponse:
+	return _send_data_with_id({"command": "kick_peer", "data": {"peer": peer_id}}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 
 ## Leave a lobby. You need to be in a lobby to leave one.
 ## Will generate either error signal or lobby_left.
-func leave_lobby():
-	return _send_data_with_id({"command": "leave_lobby"}, LeaveLobby.new(), _CommandType.LEAVE_LOBBY)
+func leave_lobby() -> LobbyResponse:
+	return _send_data_with_id({"command": "leave_lobby"}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 
 ## Lists all lobbies.
 ## Will generate either error signal or lobby_list.
-func list_lobby(start: int = 0, count: int = 10):
+func list_lobby(start: int = 0, count: int = 10) -> ListLobby:
 	return _send_data_with_id({"command": "list_lobby", "data": { "start": start, "count": count }}, ListLobby.new(), _CommandType.LOBBY_LIST)
 
 ## Ready up in the lobby. You need to be in a lobby and unready to run this.
 ## Will generate either error signal or peer_ready.
-func lobby_ready():
-	_send_data({"command": "lobby_ready"})
+func lobby_ready() -> LobbyResponse:
+	return _send_data_with_id({"command": "lobby_ready"}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 ## Ready up in the lobby. You need to be in a lobby and ready to run this.
 ## Will generate either error signal or peer_unready.
-func lobby_unready():
-	_send_data({"command": "lobby_unready"})
+func lobby_unready() -> LobbyResponse:
+	return _send_data_with_id({"command": "lobby_unready"}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 ## Seals the lobby. You need to be the host to do this and the lobby needs to be unsealed.
 ## Will generate either error signal or lobby_sealed.
-func seal_lobby():
-	_send_data({"command": "seal_lobby"})
+func seal_lobby() -> LobbyResponse:
+	return _send_data_with_id({"command": "seal_lobby"}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 ## Unseals the lobby. You need to be the host to do this and the lobby needs to be sealed.
 ## Will generate either error signal or lobby_unsealed.
-func unseal_lobby():
-	_send_data({"command": "unseal_lobby"})
+func unseal_lobby() -> LobbyResponse:
+	return _send_data_with_id({"command": "unseal_lobby"}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
 
 ## View data from a lobby. Returns lobby settings and peers.
 ## Will generate either error signal or lobby_view.
-func view_lobby(lobby: String, password: String) -> BlaziumLobby.ViewLobby:
+func view_lobby(lobby: String, password: String) -> ViewLobby:
 	return _send_data_with_id({"command": "view_lobby", "data": { "lobby": lobby, "password": password }}, ViewLobby.new(), _CommandType.LOBBY_VIEW)
 
 func _receive_data(data: Dictionary):
@@ -209,23 +191,48 @@ func _receive_data(data: Dictionary):
 			command_response._lobby_name = data["data"]["lobby_name"]
 			command_object.finished.emit(command_response)
 			_commands.erase(message_id)
+			lobby_created.emit(command_response._lobby_name)
 		"joined_lobby":
-			var command_response := JoinLobby.Response.new()
+			var command_response := LobbyResponse.Response.new()
 			command_response._lobby_name = data["data"]["lobby_name"]
 			command_object.finished.emit(command_response)
 			_commands.erase(message_id)
+			lobby_joined.emit(command_response._lobby_name)
 		"lobby_left":
-			var command_response := LeaveLobby.Response.new()
-			command_object.finished.emit(command_response)
-			_commands.erase(message_id)
+			# Either if you leave a lobby, or if you get kicked
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
+			lobby_left.emit()
 		"lobby_sealed":
+			# Either if you seal a lobby, or if host seals
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
 			lobby_sealed.emit()
 		"lobby_unsealed":
+			# Either if you unseal a lobby, or if host unseals
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
 			lobby_unsealed.emit()
 		"peer_ready":
-			peer_ready.emit(data["data"])
+			# Either if you seal are ready, or if some else is ready
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
+			peer_ready.emit(data["data"]["peer"])
 		"peer_unready":
-			peer_unready.emit(data["data"])
+			# Either if you seal are unready, or if some else is unready
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
+			peer_unready.emit(data["data"]["peer"])
 		"lobby_view":
 			var ids: Array[String] = []
 			var names: Array[String] = []
@@ -245,7 +252,6 @@ func _receive_data(data: Dictionary):
 			command_response._lobby_info.max_players = data["data"]["lobby"]["max_players"]
 			command_object.finished.emit(command_response)
 			_commands.erase(message_id)
-			#lobby_view.emit(data["data"]["lobby"]["host"], data["data"]["lobby"]["sealed"], ids, names, readys)
 		"lobby_list":
 			var arr: Array[String] = []
 			arr.assign(data["data"]["lobbies"])
@@ -256,6 +262,11 @@ func _receive_data(data: Dictionary):
 		"peer_joined":
 			peer_joined.emit(data["data"]["peer"])
 		"peer_left":
+			# Either if you kick a peer, or a peer leaves
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
 			peer_left.emit(data["data"]["peer"])
 		"error":
 			match command_type:
@@ -264,13 +275,8 @@ func _receive_data(data: Dictionary):
 					command_response._error = message
 					command_object.finished.emit(command_response)
 					_commands.erase(message_id)
-				_CommandType.JOIN_LOBBY:
-					var command_response := JoinLobby.Response.new()
-					command_response._error = message
-					command_object.finished.emit(command_response)
-					_commands.erase(message_id)
-				_CommandType.LEAVE_LOBBY:
-					var command_response := LeaveLobby.Response.new()
+				_CommandType.SIMPLE_REQUEST:
+					var command_response := LobbyResponse.Response.new()
 					command_response._error = message
 					command_object.finished.emit(command_response)
 					_commands.erase(message_id)
