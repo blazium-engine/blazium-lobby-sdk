@@ -42,13 +42,13 @@ func _on_button_pressed() -> void:
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result :BlaziumLobby.CreateLobby.Response = await lobby.create_lobby(4, "123").finished
+			var result :BlaziumLobby.CreateLobby.Response = await lobby.create_lobby(4, "").finished
 			if result.has_error():
 				print("Create Error: ", result.get_error())
 			else:
 				print("Create Result: ", result.get_lobby_name())
 		"join_lobby":
-			var result :BlaziumLobby.JoinLobby.Response = await lobby.join_lobby(message, "123").finished
+			var result :BlaziumLobby.JoinLobby.Response = await lobby.join_lobby(message, "").finished
 			if result.has_error():
 				print("Join Error: ", result.get_error())
 			else:
@@ -66,7 +66,13 @@ func _on_button_pressed() -> void:
 			else:
 				print("List Result: ", result.get_lobbies())
 		"view_lobby":
-			lobby.view_lobby(message)
+			var result :BlaziumLobby.ViewLobby.Response = await lobby.view_lobby(message, "").finished
+			if result.has_error():
+				print("View Error: ", result.get_error())
+			else:
+				print("View Result: ", result.get_lobby_info().host, " ", result.get_lobby_info().max_players, " ", result.get_lobby_info().sealed)
+				for peer in result.get_peers():
+					print("View Result Peer: ", peer.id, " ", peer.name, " ", peer.ready)
 		"kick_peer":
 			lobby.kick_peer(message)
 		"lobby_ready":

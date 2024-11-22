@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://8kf325oa7qos"]
+[gd_scene load_steps=3 format=3 uid="uid://2hfpp35b4kcm"]
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 [ext_resource type="Script" path="res://addons/blazium_sdk/blazium_lobby.gd" id="2_nnw01"]
