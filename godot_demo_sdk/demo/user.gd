@@ -6,6 +6,8 @@ extends HBoxContainer
 @onready var logs_text := $Logs
 
 func _ready() -> void:
+	lobby.received_data.connect(lobby_data)
+	lobby.received_data_to.connect(data_to)
 	lobby.lobby_created.connect(lobby_created)
 	lobby.lobby_joined.connect(lobby_joined)
 	lobby.lobby_left.connect(lobby_left)
@@ -21,6 +23,12 @@ func _ready() -> void:
 
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
+
+func lobby_data(data: String):
+	print("Callback: %s lobby_data %s" % [get_index(), data])
+
+func data_to(data: String):
+	print("Callback: %s data_to %s" % [get_index(), data])
 
 func lobby_created(lobby: String):
 	print("Callback: %s lobby_created %s" % [get_index(), lobby])
@@ -115,3 +123,15 @@ func _on_button_pressed() -> void:
 				print("Unseal Error %s: " % get_index(), result.get_error())
 			else:
 				print("Unseal Result %s: Success" % get_index())
+		"lobby_data":
+			var result :BlaziumLobby.LobbyResponse.Response = await lobby.lobby_data(message).finished
+			if result.has_error():
+				print("Lobby Data Error %s: " % get_index(), result.get_error())
+			else:
+				print("Lobby Data Result %s: Success" % get_index())
+		"data_to":
+			var result :BlaziumLobby.LobbyResponse.Response = await lobby.lobby_data_to("message", message).finished
+			if result.has_error():
+				print("Lobby Data Error %s: " % get_index(), result.get_error())
+			else:
+				print("Lobby Data Result %s: Success" % get_index())

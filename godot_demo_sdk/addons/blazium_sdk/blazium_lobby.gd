@@ -57,6 +57,15 @@ class ViewLobby:
 			return _lobby_info
 	signal finished(response: Response)
 
+class LobbyData:
+	class Response:
+		var _error: String
+		func has_error() -> bool:
+			return _error != ""
+		func get_error() -> String:
+			return _error
+	signal finished(response: Response)
+
 class LobbyInfo:
 	var host: String
 	var max_players: int
@@ -69,6 +78,8 @@ class LobbyPeer:
 
 var _commands := {}
 
+signal received_data(data: String)
+signal received_data_to(data: String)
 ## Signal generated after the lobby is created by you.
 signal lobby_created(lobby: String)
 ## Signal generated after the lobby is joined by you.
@@ -171,6 +182,12 @@ func unseal_lobby() -> LobbyResponse:
 func view_lobby(lobby: String, password: String) -> ViewLobby:
 	return _send_data_with_id({"command": "view_lobby", "data": { "lobby": lobby, "password": password }}, ViewLobby.new(), _CommandType.LOBBY_VIEW)
 
+func lobby_data(peer_data: String) -> LobbyResponse:
+	return _send_data_with_id({"command": "lobby_data", "data": { "peer_data": peer_data }}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
+
+func lobby_data_to(peer_data: String, target_peer) -> LobbyResponse:
+	return _send_data_with_id({"command": "data_to", "data": { "peer_data": peer_data , "target_peer": target_peer}}, LobbyResponse.new(), _CommandType.SIMPLE_REQUEST)
+	
 func _receive_data(data: Dictionary):
 	var message: String = data["message"]
 	var command: String = data["command"]
@@ -259,6 +276,18 @@ func _receive_data(data: Dictionary):
 			command_response._lobbies = arr
 			command_object.finished.emit(command_response)
 			_commands.erase(message_id)
+		"lobby_data":
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
+			received_data.emit(data["data"]["peer_data"])
+		"data_to":
+			if command_object != null:
+				var command_response := LobbyResponse.Response.new()
+				command_object.finished.emit(command_response)
+				_commands.erase(message_id)
+			received_data_to.emit(data["data"]["peer_data"])
 		"peer_joined":
 			peer_joined.emit(data["data"]["peer"])
 		"peer_left":
