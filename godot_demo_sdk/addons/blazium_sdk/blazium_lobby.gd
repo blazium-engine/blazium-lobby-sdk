@@ -7,9 +7,64 @@ extends Node
 var _socket := WebSocketPeer.new()
 var initialized := false
 
-class LobbyResponse:
-	var result: Dictionary
-	signal finished()
+enum _CommandType{CREATE_LOBBY, JOIN_LOBBY, KICK_PEER, LOBBY_VIEW, LOBBY_LIST, LEAVE_LOBBY}
+
+class CreateLobby:
+	class Response:
+		var _error: String
+		var _lobby_name: String
+		func has_error() -> bool:
+			return _error != ""
+		func get_error() -> String:
+			return _error
+		func get_lobby_name() -> String:
+			return _lobby_name
+	signal finished(response: Response)
+
+class JoinLobby:
+	class Response:
+		var _error: String
+		var _lobby_name: String
+		func has_error() -> bool:
+			return _error != ""
+		func get_error() -> String:
+			return _error
+		func get_lobby_name() -> String:
+			return _lobby_name
+	signal finished(response: Response)
+
+class LeaveLobby:
+	class Response:
+		var _error: String
+		func has_error() -> bool:
+			return _error != ""
+		func get_error() -> String:
+			return _error
+	signal finished(response: Response)
+
+class ListLobby:
+	class Response:
+		var _error: String
+		var _lobbies: Array[String]
+		func has_error() -> bool:
+			return _error != ""
+		func get_error() -> String:
+			return _error
+		func get_lobbies() -> Array[String]:
+			return _lobbies
+	signal finished(response: Response)
+
+class KickPeer:
+	class Response:
+		var _error: String
+		var _lobby_name: String
+		func has_error() -> bool:
+			return _error != ""
+		func get_error() -> String:
+			return _error
+		func get_lobby_name() -> String:
+			return _lobby_name
+	signal finished(response: Response)
 
 class LobbyPeer:
 	var id: String
@@ -18,20 +73,10 @@ class LobbyPeer:
 
 var _commands := {}
 
-## Signal generated after a lobby is created.
-signal lobby_created(lobby: String)
-## Signal generated after you joint a lobby.
-signal lobby_joined(lobby: String)
-## Signal generated after you leave a lobby.
-signal lobby_left()
-## Signal generated after you list lobbies.
-signal lobby_list(lobbies: Array[String])
 ## Signal generated after the host seals the lobby.
 signal lobby_sealed()
 ## Signal generated after the host unseals the lobby.
 signal lobby_unsealed()
-## Signal generated after you call view_lobby.
-signal lobby_view(host: String, sealed: bool, peer_ids: Array[String], peer_names: Array[String], peer_ready: Array[bool])
 ## Signal generated after a peer joins the lobby.
 signal peer_joined(peer: String)
 ## Signal generated after a peer leaves the lobby.
@@ -43,62 +88,61 @@ signal peer_unready(peer: String)
 
 ## Signals a log from a command.
 signal append_log(command: String, logs: String)  # Emitted to log normal activity.
-## Signals an error.
-signal append_error(logs: String)  # Emitted to log errors or unexpected behavior.
+
+func _ready():
+	set_process(false)
 
 ## Connect to a Blazium Lobby Server using a [game_id] and [lobby_url]. The default [lobby_url] is wss://lobby.blazium.app and it connects to the free Blazium Lobby server.
-func connect_to_lobby(gameID: String, lobby_url: String = "wss://lobby.blazium.app/connect") -> void:
+func connect_to_lobby(gameID: String, lobby_url: String = "wss://lobby.blazium.app/connect") -> bool:
 	var err = _socket.connect_to_url(lobby_url + "?gameID=" + gameID)
-	initialized = true
 	if err != OK:
-		append_error.emit("Unable to connect to lobby server at url: " + lobby_url)
+		append_log.emit("Unable to connect to lobby server at url: " + lobby_url)
 		set_process(false)
-		return
+		return false
+	set_process(true)
 	append_log.emit("connect_to_lobby", "Connected to lobby server at " + _socket.get_requested_url())
+	return true
 
-var counter := 0
+var _counter := 0
 
-func _increment_counter() -> int:
-	counter += 1
-	return counter
+func _increment_counter() -> String:
+	_counter += 1
+	return str(_counter)
 
-func _send_data_with_id(command: Dictionary) -> BlaziumLobby.LobbyResponse:
+func _send_data_with_id(command: Dictionary, response, command_type: _CommandType):
 	var id = _increment_counter()
 	if !command.has("data"):
 		command["data"] = {}
 	command["data"]["id"] = id
+	_commands[id] = [command_type, response]
 	_send_data(command)
-	var response := BlaziumLobby.LobbyResponse.new()
-	_commands[id] = response
 	return response
 	
 
 ## Create a lobby and become host. If you are already in a lobby, you cannot create one. You need to leave first.
-## Will generate either error signal or lobby_created.
-func create_lobby() -> BlaziumLobby.LobbyResponse:
-	return _send_data_with_id({"command": "create_lobby"})
+func create_lobby(max_players: int = 4, password: String = "") -> BlaziumLobby.CreateLobby:
+	return _send_data_with_id({"command": "create_lobby", "data": {"max_players": max_players, "password": password}}, CreateLobby.new(), _CommandType.CREATE_LOBBY)
 
 ## Join a lobby. If you are already in a lobby, you cannot join another one. You need to leave first.
-## Will generate either error signal or lobby_joined.
-func join_lobby(lobby_name: String):
-	_send_data({"command": "join_lobby", "data": lobby_name})
+func join_lobby(lobby_name: String, password: String = "") -> BlaziumLobby.JoinLobby:
+	return _send_data_with_id({"command": "join_lobby", "data": {"lobby": lobby_name, "password": password}}, JoinLobby.new(), _CommandType.JOIN_LOBBY)
 
 ## Kick a peer. You need to be host to do this operation.
 ## Will generate either error signal or peer_left.
-func kick_peer(peer_id: String):
-	_send_data({"command": "kick_peer", "data": peer_id})
+func kick_peer(peer_id: String) -> BlaziumLobby.KickPeer:
+	return _send_data_with_id({"command": "kick_peer", "data": {"peer": peer_id}}, KickPeer.new(), _CommandType.KICK_PEER)
 
 
 ## Leave a lobby. You need to be in a lobby to leave one.
 ## Will generate either error signal or lobby_left.
 func leave_lobby():
-	_send_data({"command": "leave_lobby"})
+	return _send_data_with_id({"command": "leave_lobby"}, LeaveLobby.new(), _CommandType.LEAVE_LOBBY)
 
 
 ## Lists all lobbies.
 ## Will generate either error signal or lobby_list.
-func list_lobby():
-	_send_data({"command": "list_lobby"})
+func list_lobby(start: int = 0, count: int = 10):
+	return _send_data_with_id({"command": "list_lobby", "data": { "start": start, "count": count }}, ListLobby.new(), _CommandType.LOBBY_LIST)
 
 ## Ready up in the lobby. You need to be in a lobby and unready to run this.
 ## Will generate either error signal or peer_ready.
@@ -129,14 +173,31 @@ func _receive_data(data: Dictionary):
 	var message: String = data["message"]
 	var command: String = data["command"]
 	append_log.emit(command, message)
-
+	var message_id := ""
+	if data.has("data") && data["data"].has("id"):
+		message_id = data["data"]["id"]
+	var command_type
+	var command_object
+	if _commands.has(message_id):
+		var command_array: Array = _commands[message_id]
+		command_type = command_array[0]
+		command_object = command_array[1]
+		data.erase("id")
 	match command:
 		"lobby_created":
-			lobby_created.emit(data["data"])
+			var command_response := CreateLobby.Response.new()
+			command_response._lobby_name = data["data"]["lobby_name"]
+			command_object.finished.emit(command_response)
+			_commands.erase(message_id)
 		"joined_lobby":
-			lobby_joined.emit(data["data"])
+			var command_response := JoinLobby.Response.new()
+			command_response._lobby_name = data["data"]["lobby_name"]
+			command_object.finished.emit(command_response)
+			_commands.erase(message_id)
 		"lobby_left":
-			lobby_left.emit()
+			var command_response := LeaveLobby.Response.new()
+			command_object.finished.emit(command_response)
+			_commands.erase(message_id)
 		"lobby_sealed":
 			lobby_sealed.emit()
 		"lobby_unsealed":
@@ -153,26 +214,51 @@ func _receive_data(data: Dictionary):
 				ids.push_back(peer_json["peer_id"])
 				names.push_back(peer_json["peer_name"])
 				readys.push_back(peer_json["peer_ready"])
-			lobby_view.emit(data["data"]["lobby"]["host"], data["data"]["lobby"]["sealed"], ids, names, readys)
+			#lobby_view.emit(data["data"]["lobby"]["host"], data["data"]["lobby"]["sealed"], ids, names, readys)
 		"lobby_list":
 			var arr: Array[String] = []
-			arr.assign(data["data"])
-			lobby_list.emit(arr)
+			arr.assign(data["data"]["lobbies"])
+			var command_response := ListLobby.Response.new()
+			command_response._lobbies = arr
+			command_object.finished.emit(command_response)
+			_commands.erase(message_id)
 		"peer_joined":
-			peer_joined.emit(data["data"])
+			peer_joined.emit(data["data"]["peer"])
 		"peer_left":
-			peer_left.emit(data["data"])
+			peer_left.emit(data["data"]["peer"])
 		"error":
-			append_error.emit(message)
+			match command_type:
+				_CommandType.CREATE_LOBBY:
+					var command_response := CreateLobby.Response.new()
+					command_response._error = message
+					command_object.finished.emit(command_response)
+					_commands.erase(message_id)
+				_CommandType.JOIN_LOBBY:
+					var command_response := JoinLobby.Response.new()
+					command_response._error = message
+					command_object.finished.emit(command_response)
+					_commands.erase(message_id)
+				_CommandType.LEAVE_LOBBY:
+					var command_response := LeaveLobby.Response.new()
+					command_response._error = message
+					command_object.finished.emit(command_response)
+					_commands.erase(message_id)
+				_CommandType.LOBBY_LIST:
+					var command_response := ListLobby.Response.new()
+					command_response._error = message
+					command_object.finished.emit(command_response)
+					_commands.erase(message_id)
+				_: # Regular error case
+					append_log.emit(message)
 		_:
-			append_error.emit("Unmatched Command %s Message %s " % [command, message])
+			append_log.emit("Unmatched Command %s Message %s " % [command, message])
 
 func _wait_ready():
 	var wait_start := Time.get_ticks_msec()
 	while _socket.get_ready_state() != WebSocketPeer.STATE_OPEN:
 		await get_tree().create_timer(0.01).timeout
 		if Time.get_ticks_msec() - wait_start > 5000:
-			append_error.emit("Socket not ready for 5 seconds.")
+			append_log.emit("Socket not ready for 5 seconds.")
 			set_process(false)
 			break
 
@@ -181,9 +267,6 @@ func _send_data(data: Dictionary):
 	_socket.send_text(JSON.stringify(data))
 
 func _process(_delta):
-	if !initialized:
-		return
-
 	_socket.poll()
 
 	var state = _socket.get_ready_state()
@@ -196,5 +279,5 @@ func _process(_delta):
 	elif state == WebSocketPeer.STATE_CLOSED:
 		var code = _socket.get_close_code()
 		var reason = _socket.get_close_reason()
-		append_error.emit("WebSocket closed with code: %d. Clean: %s Reason: %s" % [code, code != -1, reason])
+		append_log.emit("WebSocket closed with code: %d. Clean: %s Reason: %s" % [code, code != -1, reason])
 		set_process(false)
