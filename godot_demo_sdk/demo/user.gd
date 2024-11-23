@@ -17,6 +17,7 @@ func _ready() -> void:
 	lobby.peer_left.connect(peer_left)
 	lobby.peer_ready.connect(peer_ready)
 	lobby.peer_unready.connect(peer_unready)
+	lobby.peer_named.connect(peer_named)
 	lobby.append_log.connect(append_log)
 
 	lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
@@ -39,17 +40,20 @@ func lobby_joined(lobby: String):
 func lobby_left():
 	print("Callback: %s lobby_left" % [get_index()])
 
-func peer_joined(lobby_peer: String):
-	print("Callback: %s peer_joined %s" % [get_index(), lobby_peer])
+func peer_joined(peer_id: String, peer_name: String):
+	print("Callback: %s peer_joined %s %s" % [get_index(), peer_id, peer_name])
 
-func peer_left(lobby_peer: String):
-	print("Callback: %s peer_left %s" % [get_index(), lobby_peer])
+func peer_left(lobby_peer: String, kicked: bool):
+	print("Callback: %s peer_left %s %s" % [get_index(), lobby_peer, kicked])
 	
 func peer_ready(lobby_peer: String):
 	print("Callback: %s peer_ready %s" % [get_index(), lobby_peer])
 
 func peer_unready(lobby_peer: String):
 	print("Callback: %s peer_unready %s" % [get_index(), lobby_peer])
+
+func peer_named(peer_id: String, peer_name: String):
+	print("Callback: %s peer_named %s %s" % [get_index(), peer_id, peer_name])
 
 func lobby_sealed():
 	print("Callback: %s lobby_sealed" % [get_index()])
@@ -111,6 +115,12 @@ func _on_button_pressed() -> void:
 				print("Unready Error %s: " % get_index(), result.get_error())
 			else:
 				print("Unready Result %s: Success" % get_index())
+		"set_name":
+			var result :BlaziumLobby.LobbyResponse.Response = await lobby.set_peer_name(message).finished
+			if result.has_error():
+				print("Set Name Error %s: " % get_index(), result.get_error())
+			else:
+				print("Set Name %s: Success" % get_index())
 		"seal_lobby":
 			var result :BlaziumLobby.LobbyResponse.Response = await lobby.seal_lobby().finished
 			if result.has_error():
