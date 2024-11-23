@@ -20,7 +20,8 @@ func _ready() -> void:
 	lobby.peer_named.connect(peer_named)
 	lobby.append_log.connect(append_log)
 
-	lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
+	#lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
+	lobby.connect_to_lobby("demo_game")
 
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
