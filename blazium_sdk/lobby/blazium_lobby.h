@@ -7,10 +7,62 @@
 
 class BlaziumLobby : public Node {
     GDCLASS(BlaziumLobby, Node);
+public:
+    class CreateLobbyResponse {
+        String error;
+        String lobby_name;
+    public:
+        bool has_error() const { return !error.empty(); }
+        String get_error() const { return error; }
+        String get_lobby_name() const { return _lobby_name; }
+    };
 
+    class LobbyResponse {
+        String error;
+    public:
+        bool has_error() const { return !error.empty(); }
+        String get_error() const { return error; }
+    };
+
+    class ListLobbyResponse {
+        String error;
+        Array lobbies;
+    public:
+
+        bool has_error() const { return !error.empty(); }
+        String get_error() const { return error; }
+        Array get_lobbies() const { return lobbies; }
+    };
+
+    class ViewLobbyResponse {
+        String error;
+        Array peers;
+        Dictionary lobby_info;
+    public:
+
+        bool has_error() const { return !error.empty(); }
+        String get_error() const { return error; }
+        Array get_peers() const { return peers; }
+        Dictionary get_lobby_info() const { return lobby_info; }
+    };
+
+    class LobbyInfo {
+    public:
+        String host;
+        int max_players = 0;
+        bool sealed = false;
+    };
+
+    class LobbyPeer {
+    public:
+        String id;
+        String name;
+        bool ready = false;
+    };
 private:
     Ref<WebSocketPeer> _socket;
-    bool initialized;
+    int _counter = 0;
+    Dictionary _commands;
 
     String _get_data_from_dict(const Dictionary &dict, const String &key);
     void _receive_data(const Dictionary &data);
