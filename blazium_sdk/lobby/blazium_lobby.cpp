@@ -1,31 +1,31 @@
 #include "./blazium_lobby.h"
 #include "scene/main/node.h"
 
-BlaziumLobby::BlaziumLobby() {
+LobbyClient::LobbyClient() {
     _socket = Ref<WebSocketPeer>(WebSocketPeer::create());
     initialized = false;
 }
 
-BlaziumLobby::~BlaziumLobby() {
+LobbyClient::~LobbyClient() {
     if (initialized) {
         _socket->close(1000, "Disconnected");
         set_process_internal(false);
     }
 }
 
-void BlaziumLobby::_bind_methods() {
+void LobbyClient::_bind_methods() {
     // Register methods
-    ClassDB::bind_method(D_METHOD("connect_to_lobby", "game_id", "lobby_url"), &BlaziumLobby::connect_to_lobby);
-    ClassDB::bind_method(D_METHOD("create_lobby"), &BlaziumLobby::create_lobby);
-    ClassDB::bind_method(D_METHOD("join_lobby", "lobby_name"), &BlaziumLobby::join_lobby);
-    ClassDB::bind_method(D_METHOD("leave_lobby"), &BlaziumLobby::leave_lobby);
-    ClassDB::bind_method(D_METHOD("list_lobby"), &BlaziumLobby::list_lobby);
-    ClassDB::bind_method(D_METHOD("view_lobby", "lobby_name"), &BlaziumLobby::view_lobby);
-    ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &BlaziumLobby::kick_peer);
-    ClassDB::bind_method(D_METHOD("lobby_ready"), &BlaziumLobby::lobby_ready);
-    ClassDB::bind_method(D_METHOD("lobby_unready"), &BlaziumLobby::lobby_unready);
-    ClassDB::bind_method(D_METHOD("seal_lobby"), &BlaziumLobby::seal_lobby);
-    ClassDB::bind_method(D_METHOD("unseal_lobby"), &BlaziumLobby::unseal_lobby);
+    ClassDB::bind_method(D_METHOD("connect_to_lobby", "game_id", "lobby_url"), &LobbyClient::connect_to_lobby);
+    ClassDB::bind_method(D_METHOD("create_lobby"), &LobbyClient::create_lobby);
+    ClassDB::bind_method(D_METHOD("join_lobby", "lobby_name"), &LobbyClient::join_lobby);
+    ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
+    ClassDB::bind_method(D_METHOD("list_lobby"), &LobbyClient::list_lobby);
+    ClassDB::bind_method(D_METHOD("view_lobby", "lobby_name"), &LobbyClient::view_lobby);
+    ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &LobbyClient::kick_peer);
+    ClassDB::bind_method(D_METHOD("lobby_ready"), &LobbyClient::lobby_ready);
+    ClassDB::bind_method(D_METHOD("lobby_unready"), &LobbyClient::lobby_unready);
+    ClassDB::bind_method(D_METHOD("seal_lobby"), &LobbyClient::seal_lobby);
+    ClassDB::bind_method(D_METHOD("unseal_lobby"), &LobbyClient::unseal_lobby);
 
     // Register signals
     ADD_SIGNAL(MethodInfo("lobby_created", PropertyInfo(Variant::STRING, "lobby")));
@@ -43,7 +43,7 @@ void BlaziumLobby::_bind_methods() {
     ADD_SIGNAL(MethodInfo("append_error", PropertyInfo(Variant::STRING, "logs")));
 }
 
-void BlaziumLobby::connect_to_lobby(const String &game_id, const String &lobby_url) {
+void LobbyClient::connect_to_lobby(const String &game_id, const String &lobby_url) {
     String url = lobby_url + "?gameID=" + game_id;
     Error err = _socket->connect_to_url(url);
     if (err != OK) {
@@ -68,48 +68,48 @@ Dictionary create_command_dict(const String &command, const String &data) {
     return dict;
 }
 
-void BlaziumLobby::create_lobby() {
+void LobbyClient::create_lobby() {
     _send_data(create_command_dict("create_lobby"));
 }
 
-void BlaziumLobby::join_lobby(const String &lobby_name) {
+void LobbyClient::join_lobby(const String &lobby_name) {
     _send_data(create_command_dict("join_lobby", lobby_name));
 }
 
-void BlaziumLobby::leave_lobby() {
+void LobbyClient::leave_lobby() {
     _send_data(create_command_dict("leave_lobby"));
 }
 
-void BlaziumLobby::list_lobby() {
+void LobbyClient::list_lobby() {
     _send_data(create_command_dict("list_lobby"));
 }
 
-void BlaziumLobby::view_lobby(const String &lobby_name) {
+void LobbyClient::view_lobby(const String &lobby_name) {
     _send_data(create_command_dict("view_lobby", lobby_name));
 }
 
-void BlaziumLobby::kick_peer(const String &peer_id) {
+void LobbyClient::kick_peer(const String &peer_id) {
     _send_data(create_command_dict("kick_peer", peer_id));
 }
 
-void BlaziumLobby::lobby_ready() {
+void LobbyClient::lobby_ready() {
     _send_data(create_command_dict("lobby_ready"));
 }
 
-void BlaziumLobby::lobby_unready() {
+void LobbyClient::lobby_unready() {
     _send_data(create_command_dict("lobby_unready"));
 }
 
-void BlaziumLobby::seal_lobby() {
+void LobbyClient::seal_lobby() {
     _send_data(create_command_dict("seal_lobby"));
 }
 
-void BlaziumLobby::unseal_lobby() {
+void LobbyClient::unseal_lobby() {
     _send_data(create_command_dict("unseal_lobby"));
 }
 
 
-void BlaziumLobby::_notification(int p_what) {
+void LobbyClient::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_INTERNAL_PROCESS: {
     if (!initialized) {
@@ -138,7 +138,7 @@ void BlaziumLobby::_notification(int p_what) {
 	}
 }
 
-void BlaziumLobby::_send_data(const Dictionary &data) {
+void LobbyClient::_send_data(const Dictionary &data) {
     if (_socket->get_ready_state() != WebSocketPeer::STATE_OPEN) {
         emit_signal("append_error", "Socket is not ready.");
         return;
@@ -146,7 +146,7 @@ void BlaziumLobby::_send_data(const Dictionary &data) {
     _socket->send_text(JSON::stringify(data));
 }
 
-void BlaziumLobby::_receive_data(const Dictionary &dict) {
+void LobbyClient::_receive_data(const Dictionary &dict) {
     String command = "error";
     if (dict.has("command")) {
         command = dict["command"];

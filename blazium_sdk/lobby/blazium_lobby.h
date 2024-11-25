@@ -5,8 +5,8 @@
 #include "core/io/json.h"
 #include "modules/websocket/websocket_peer.h"
 
-class BlaziumLobby : public Node {
-    GDCLASS(BlaziumLobby, Node);
+class LobbyClient : public Node {
+    GDCLASS(LobbyClient, Node);
 public:
     class CreateLobbyResponse {
         String error;
@@ -87,8 +87,8 @@ public:
     void seal_lobby();
     void unseal_lobby();
 
-    BlaziumLobby();
-    ~BlaziumLobby();
+    LobbyClient();
+    ~LobbyClient();
 };
 
 #endif // BLAZIUM_SDK_LOBBY_BLAZIUM_LOBBY_H

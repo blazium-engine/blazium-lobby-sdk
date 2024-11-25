@@ -3,7 +3,7 @@
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
     if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		GDREGISTER_CLASS(BlaziumLobby);
+		GDREGISTER_CLASS(LobbyClient);
 	}
 }
 
