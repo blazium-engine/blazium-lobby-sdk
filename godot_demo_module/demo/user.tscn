@@ -59,6 +59,4 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 
-[node name="AnimationTree" type="AnimationTree" parent="."]
-
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
