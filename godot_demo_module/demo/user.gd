@@ -20,7 +20,7 @@ func _ready() -> void:
 	lobby.peer_named.connect(peer_named)
 	lobby.append_log.connect(append_log)
 
-	#lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
+	lobby.server_url = "ws://localhost:8080/connect"
 	lobby.connect_to_lobby("demo_game")
 
 func append_log(command: String, logs: String):
@@ -67,7 +67,7 @@ func _on_button_pressed() -> void:
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result : CreateLobbyResult = await lobby.create_lobby(4).finished
+			var result : CreateLobbyResult = await lobby.create_lobby("title", 4).finished
 			if result.has_error():
 				print("Create Error %s: " % get_index(), result.get_error())
 			else:
@@ -89,7 +89,8 @@ func _on_button_pressed() -> void:
 			if result.has_error():
 				print("List Error %s: " % get_index(), result.get_error())
 			else:
-				print("List Result %s: " % get_index(), result.get_lobbies())
+				for lobby in result.get_lobbies():
+					print("List Result %s: " % get_index(), lobby.host, " ", lobby.id, " ", lobby.host_name, " ", lobby.max_players, " ", lobby.players, " ", lobby.sealed, " ", lobby.name)
 		"view_lobby":
 			var result :ViewLobbyResult = await lobby.view_lobby(message, "").finished
 			if result.has_error():

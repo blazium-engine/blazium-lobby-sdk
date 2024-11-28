@@ -20,7 +20,7 @@ text = "Command:"
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 12
+item_count = 13
 popup/item_0/text = "create_lobby"
 popup/item_0/id = 0
 popup/item_1/text = "join_lobby"
@@ -45,6 +45,8 @@ popup/item_10/text = "lobby_data"
 popup/item_10/id = 5
 popup/item_11/text = "data_to"
 popup/item_11/id = 9
+popup/item_12/text = "set_name"
+popup/item_12/id = 12
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
