@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-@onready var lobby : BlaziumLobby = $BlaziumLobby
+@onready var lobby : LobbyClient = $LobbyClient
 @onready var message_text := $Message
 @onready var command_toggle := $CommandToggle
 @onready var logs_text := $Logs
@@ -20,7 +20,8 @@ func _ready() -> void:
 	lobby.peer_named.connect(peer_named)
 	lobby.append_log.connect(append_log)
 
-	lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
+	#lobby.connect_to_lobby("demo_game", "ws://localhost:8080/connect")
+	lobby.connect_to_lobby("demo_game")
 
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
@@ -66,31 +67,32 @@ func _on_button_pressed() -> void:
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result :BlaziumLobby.CreateLobby.Response = await lobby.create_lobby(4).finished
+			var result :LobbyClient.CreateLobby.Response = await lobby.create_lobby(4).finished
+			print(typeof(result))
 			if result.has_error():
 				print("Create Error %s: " % get_index(), result.get_error())
 			else:
 				print("Create Result %s: " % get_index(), result.get_lobby_name())
 		"join_lobby":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.join_lobby(message).finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.join_lobby(message).finished
 			if result.has_error():
 				print("Join Error %s: " % get_index(), result.get_error())
 			else:
 				print("Join Result %s: Success" % get_index())
 		"leave_lobby":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.leave_lobby().finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.leave_lobby().finished
 			if result.has_error():
 				print("Leave Error %s: " % get_index(), result.get_error())
 			else:
 				print("Leave Result %s: Success" % get_index())
 		"list_lobby":
-			var result :BlaziumLobby.ListLobby.Response = await lobby.list_lobby().finished
+			var result :LobbyClient.ListLobby.Response = await lobby.list_lobby().finished
 			if result.has_error():
 				print("List Error %s: " % get_index(), result.get_error())
 			else:
 				print("List Result %s: " % get_index(), result.get_lobbies())
 		"view_lobby":
-			var result :BlaziumLobby.ViewLobby.Response = await lobby.view_lobby(message, "").finished
+			var result :LobbyClient.ViewLobby.Response = await lobby.view_lobby(message, "").finished
 			if result.has_error():
 				print("View Error %s: " % get_index(), result.get_error())
 			else:
@@ -98,49 +100,49 @@ func _on_button_pressed() -> void:
 				for peer in result.get_peers():
 					print("View Result Peer %s: "  % get_index(), peer.id, " ", peer.name, " ", peer.ready)
 		"kick_peer":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.kick_peer(message).finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.kick_peer(message).finished
 			if result.has_error():
 				print("Kick Error %s: " % get_index(), result.get_error())
 			else:
 				print("Kick Result %s: Success" % get_index())
 		"lobby_ready":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.lobby_ready().finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.lobby_ready().finished
 			if result.has_error():
 				print("Ready Error %s: " % get_index(), result.get_error())
 			else:
 				print("Ready Result %s: Success" % get_index())
 		"lobby_unready":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.lobby_unready().finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.lobby_unready().finished
 			if result.has_error():
 				print("Unready Error %s: " % get_index(), result.get_error())
 			else:
 				print("Unready Result %s: Success" % get_index())
 		"set_name":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.set_peer_name(message).finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.set_peer_name(message).finished
 			if result.has_error():
 				print("Set Name Error %s: " % get_index(), result.get_error())
 			else:
 				print("Set Name %s: Success" % get_index())
 		"seal_lobby":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.seal_lobby().finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.seal_lobby().finished
 			if result.has_error():
 				print("Seal Error %s: " % get_index(), result.get_error())
 			else:
 				print("Seal Result %s: Success" % get_index())
 		"unseal_lobby":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.unseal_lobby().finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.unseal_lobby().finished
 			if result.has_error():
 				print("Unseal Error %s: " % get_index(), result.get_error())
 			else:
 				print("Unseal Result %s: Success" % get_index())
 		"lobby_data":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.lobby_data(message).finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.lobby_data(message).finished
 			if result.has_error():
 				print("Lobby Data Error %s: " % get_index(), result.get_error())
 			else:
 				print("Lobby Data Result %s: Success" % get_index())
 		"data_to":
-			var result :BlaziumLobby.LobbyResponse.Response = await lobby.lobby_data_to("message", message).finished
+			var result :LobbyClient.LobbyResponse.Response = await lobby.lobby_data_to("message", message).finished
 			if result.has_error():
 				print("Lobby Data Error %s: " % get_index(), result.get_error())
 			else:

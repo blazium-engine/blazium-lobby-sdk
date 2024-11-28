@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://2hfpp35b4kcm"]
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
-[ext_resource type="Script" path="res://addons/blazium_sdk/blazium_lobby.gd" id="2_nnw01"]
+[ext_resource type="Script" path="res://addons/blazium_sdk/lobby_client.gd" id="2_2dagl"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -59,7 +59,7 @@ size_flags_horizontal = 3
 text = "Logs:"
 editable = false
 
-[node name="BlaziumLobby" type="Node" parent="."]
-script = ExtResource("2_nnw01")
+[node name="LobbyClient" type="Node" parent="."]
+script = ExtResource("2_2dagl")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

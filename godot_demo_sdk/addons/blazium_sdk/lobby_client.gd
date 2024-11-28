@@ -1,8 +1,10 @@
-@icon("res://addons/blazium_sdk/blazium_icon.svg")
-class_name BlaziumLobby
-extends Node
+@icon("res://addons/blazium_sdk/LobbyClient.svg")
+class_name LobbyClient
+extends BlaziumClient
 
 ## A node used to connect to a lobby server. It can be used to do matchmaking. You care do operations such as create lobbys, join lobbys, etc.
+
+@export var server_url = "wss://lobby.blazium.app/connect"
 
 var _socket := WebSocketPeer.new()
 
@@ -106,8 +108,9 @@ signal append_log(command: String, logs: String)  # Emitted to log normal activi
 func _ready():
 	set_process(false)
 
-## Connect to a Blazium Lobby Server using a [game_id] and [lobby_url]. The default [lobby_url] is wss://lobby.blazium.app and it connects to the free Blazium Lobby server.
-func connect_to_lobby(gameID: String, lobby_url: String = "wss://lobby.blazium.app/connect") -> bool:
+## Connect to a Blazium Lobby Server using a [game_id]. The default [lobby_url] is wss://lobby.blazium.app and it connects to the free Blazium Lobby server.
+func connect_to_lobby(gameID: String) -> bool:
+	var lobby_url = server_url
 	var err = _socket.connect_to_url(lobby_url + "?gameID=" + gameID)
 	if err != OK:
 		append_log.emit("error", "Unable to connect to lobby server at url: " + lobby_url)
@@ -262,9 +265,6 @@ func _receive_data(data: Dictionary):
 				_commands.erase(message_id)
 			peer_unready.emit(data["data"]["peer_id"])
 		"lobby_view":
-			var ids: Array[String] = []
-			var names: Array[String] = []
-			var readys: Array[bool] = []
 			var peers : Array[LobbyPeer]
 			if data["data"].has("peers"):
 				for peer_json in data["data"]["peers"]:
