@@ -32,11 +32,11 @@ func lobby_data(data: String):
 func data_to(data: String):
 	print("Callback: %s data_to %s" % [get_index(), data])
 
-func lobby_created(lobby: String):
-	print("Callback: %s lobby_created %s" % [get_index(), lobby])
+func lobby_created(lobby: LobbyInfo):
+	print("Callback: %s lobby_created %s" % [get_index(), lobby.name])
 
-func lobby_joined(lobby: String):
-	print("Callback: %s lobby_joined %s" % [get_index(), lobby])
+func lobby_joined(lobby: LobbyInfo):
+	print("Callback: %s lobby_joined %s" % [get_index(), lobby.name])
 
 func lobby_left():
 	print("Callback: %s lobby_left" % [get_index()])
@@ -67,83 +67,83 @@ func _on_button_pressed() -> void:
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result : CreateLobbyResult = await lobby.create_lobby("title", 4).finished
+			var result : CreateLobbyResult = await lobby.create_lobby(message, 4).finished
 			if result.has_error():
-				print("Create Error %s: " % get_index(), result.get_error())
+				print("Create Error %s: " % get_index(), result.error)
 			else:
-				print("Create Result %s: " % get_index(), result.get_lobby_name())
+				print("Create Result %s: " % get_index(), result.lobby.name)
 		"join_lobby":
 			var result : LobbyResult = await lobby.join_lobby(message).finished
 			if result.has_error():
-				print("Join Error %s: " % get_index(), result.get_error())
+				print("Join Error %s: " % get_index(), result.error)
 			else:
-				print("Join Result %s: Success" % get_index())
+				print("Join Result %s: " % get_index(), result.lobby.name)
 		"leave_lobby":
 			var result :LobbyResult = await lobby.leave_lobby().finished
 			if result.has_error():
-				print("Leave Error %s: " % get_index(), result.get_error())
+				print("Leave Error %s: " % get_index(), result.error)
 			else:
 				print("Leave Result %s: Success" % get_index())
 		"list_lobby":
 			var result :ListLobbyResult = await lobby.list_lobby().finished
 			if result.has_error():
-				print("List Error %s: " % get_index(), result.get_error())
+				print("List Error %s: " % get_index(), result.error)
 			else:
 				for lobby in result.get_lobbies():
 					print("List Result %s: " % get_index(), lobby.host, " ", lobby.id, " ", lobby.host_name, " ", lobby.max_players, " ", lobby.players, " ", lobby.sealed, " ", lobby.name)
 		"view_lobby":
 			var result :ViewLobbyResult = await lobby.view_lobby(message, "").finished
 			if result.has_error():
-				print("View Error %s: " % get_index(), result.get_error())
+				print("View Error %s: " % get_index(), result.error)
 			else:
-				print("View Result %s: " % get_index(), result.get_lobby_info().host, " ", result.get_lobby_info().max_players, " ", result.get_lobby_info().sealed)
+				print("View Result %s: " % get_index(), result.lobby.host, " ", result.lobby.max_players, " ", result.lobby.sealed)
 				for peer in result.get_peers():
 					print("View Result Peer %s: "  % get_index(), peer.id, " ", peer.name, " ", peer.ready)
 		"kick_peer":
 			var result :LobbyResult = await lobby.kick_peer(message).finished
 			if result.has_error():
-				print("Kick Error %s: " % get_index(), result.get_error())
+				print("Kick Error %s: " % get_index(), result.error)
 			else:
 				print("Kick Result %s: Success" % get_index())
 		"lobby_ready":
 			var result :LobbyResult = await lobby.lobby_ready().finished
 			if result.has_error():
-				print("Ready Error %s: " % get_index(), result.get_error())
+				print("Ready Error %s: " % get_index(), result.error)
 			else:
 				print("Ready Result %s: Success" % get_index())
 		"lobby_unready":
 			var result :LobbyResult = await lobby.lobby_unready().finished
 			if result.has_error():
-				print("Unready Error %s: " % get_index(), result.get_error())
+				print("Unready Error %s: " % get_index(), result.error)
 			else:
 				print("Unready Result %s: Success" % get_index())
 		"set_name":
 			var result :LobbyResult = await lobby.set_peer_name(message).finished
 			if result.has_error():
-				print("Set Name Error %s: " % get_index(), result.get_error())
+				print("Set Name Error %s: " % get_index(), result.error)
 			else:
 				print("Set Name %s: Success" % get_index())
 		"seal_lobby":
 			var result :LobbyResult = await lobby.seal_lobby().finished
 			if result.has_error():
-				print("Seal Error %s: " % get_index(), result.get_error())
+				print("Seal Error %s: " % get_index(), result.error)
 			else:
 				print("Seal Result %s: Success" % get_index())
 		"unseal_lobby":
 			var result :LobbyResult = await lobby.unseal_lobby().finished
 			if result.has_error():
-				print("Unseal Error %s: " % get_index(), result.get_error())
+				print("Unseal Error %s: " % get_index(), result.error)
 			else:
 				print("Unseal Result %s: Success" % get_index())
 		"lobby_data":
 			var result :LobbyResult = await lobby.lobby_data(message).finished
 			if result.has_error():
-				print("Lobby Data Error %s: " % get_index(), result.get_error())
+				print("Lobby Data Error %s: " % get_index(), result.error)
 			else:
 				print("Lobby Data Result %s: Success" % get_index())
 		"data_to":
 			var result :LobbyResult = await lobby.lobby_data_to("message", message).finished
 			if result.has_error():
-				print("Lobby Data Error %s: " % get_index(), result.get_error())
+				print("Lobby Data Error %s: " % get_index(), result.error)
 			else:
 				print("Lobby Data Result %s: Success" % get_index())

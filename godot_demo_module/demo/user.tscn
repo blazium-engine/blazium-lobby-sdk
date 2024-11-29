@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://8kf325oa7qos"]
+[gd_scene load_steps=6 format=3 uid="uid://8kf325oa7qos"]
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
+
+[sub_resource type="LobbyInfo" id="LobbyInfo_i2cc8"]
+
+[sub_resource type="LobbyPeer" id="LobbyPeer_wqc8j"]
+
+[sub_resource type="LobbyInfo" id="LobbyInfo_dy256"]
+
+[sub_resource type="LobbyPeer" id="LobbyPeer_qy3kj"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -60,5 +68,11 @@ text = "Logs:"
 editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
+lobby = SubResource("LobbyInfo_i2cc8")
+peer = SubResource("LobbyPeer_wqc8j")
+
+[node name="LobbyClient2" type="LobbyClient" parent="."]
+lobby = SubResource("LobbyInfo_dy256")
+peer = SubResource("LobbyPeer_qy3kj")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
