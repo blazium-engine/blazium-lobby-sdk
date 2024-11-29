@@ -32,11 +32,15 @@ func lobby_data(data: String):
 func data_to(data: String):
 	print("Callback: %s data_to %s" % [get_index(), data])
 
-func lobby_created(lobby: LobbyInfo):
+func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	print("Callback: %s lobby_created %s" % [get_index(), lobby.lobby_name])
+	for peer in peers:
+		print("Callback: %s lobby_created peer: " % get_index(), peer.id, " ", peer.peer_name, " ", peer.ready)
 
-func lobby_joined(lobby: LobbyInfo):
+func lobby_joined(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	print("Callback: %s lobby_joined %s" % [get_index(), lobby.lobby_name])
+	for peer in peers:
+		print("Callback: %s lobby_joined peer: "  % get_index(), peer.id, " ", peer.peer_name, " ", peer.ready)
 
 func lobby_left():
 	print("Callback: %s lobby_left" % [get_index()])
@@ -67,18 +71,21 @@ func _on_button_pressed() -> void:
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result : LobbyResult = await lobby_client.create_lobby(message, 4).finished
+			var result : ViewLobbyResult = await lobby_client.create_lobby(message, 4).finished
 			if result.has_error():
 				print("Create Error %s: " % get_index(), result.error)
 			else:
-				print("Create Result %s: " % get_index(), lobby_client.lobby.lobby_name)
-			print(lobby_client.get_lobby())
+				print("Create Result %s: " % get_index(), result.lobby.id, " ", result.lobby.max_players, " ", result.lobby.sealed)
+				for peer in result.peers:
+					print("Create Peer %s: "  % get_index(), peer.id, " ", peer.peer_name, " ", peer.ready)
 		"join_lobby":
-			var result : LobbyResult = await lobby_client.join_lobby(message).finished
+			var result : ViewLobbyResult = await lobby_client.join_lobby(message).finished
 			if result.has_error():
 				print("Join Error %s: " % get_index(), result.error)
 			else:
-				print("Join Result %s: " % get_index(), lobby_client.lobby.lobby_name)
+				print("Join Result %s: " % get_index(), result.lobby.host, " ", result.lobby.max_players, " ", result.lobby.sealed)
+				for peer in result.peers:
+					print("Join Peer %s: " % get_index(), peer.id, " ", peer.peer_name, " ", peer.ready)
 		"leave_lobby":
 			var result :LobbyResult = await lobby_client.leave_lobby().finished
 			if result.has_error():
@@ -90,16 +97,16 @@ func _on_button_pressed() -> void:
 			if result.has_error():
 				print("List Error %s: " % get_index(), result.error)
 			else:
-				for lobby in result.get_lobbies():
-					print("List Result %s: " % get_index(), lobby.host, " ", lobby.id, " ", lobby.host_name, " ", lobby.max_players, " ", lobby.players, " ", lobby.sealed, " ", lobby.name)
+				for lobby in result.lobbies:
+					print("List Result %s: " % get_index(), lobby.host, " ", lobby.id, " ", lobby.host_name, " ", lobby.max_players, " ", lobby.players, " ", lobby.sealed, " ", lobby.lobby_name)
 		"view_lobby":
 			var result :ViewLobbyResult = await lobby_client.view_lobby(message, "").finished
 			if result.has_error():
 				print("View Error %s: " % get_index(), result.error)
 			else:
 				print("View Result %s: " % get_index(), result.lobby.host, " ", result.lobby.max_players, " ", result.lobby.sealed)
-				for peer in result.get_peers():
-					print("View Result Peer %s: "  % get_index(), peer.id, " ", peer.name, " ", peer.ready)
+				for peer in result.peers:
+					print("View Peer %s: "  % get_index(), peer.id, " ", peer.peer_name, " ", peer.ready)
 		"kick_peer":
 			var result :LobbyResult = await lobby_client.kick_peer(message).finished
 			if result.has_error():
