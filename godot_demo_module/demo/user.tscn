@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_kb2sg"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_4uxy6"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_rkwg7"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_mi32j"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -64,7 +64,7 @@ text = "Logs:"
 editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
-lobby = SubResource("LobbyInfo_kb2sg")
-peer = SubResource("LobbyPeer_rkwg7")
+lobby = SubResource("LobbyInfo_4uxy6")
+peer = SubResource("LobbyPeer_mi32j")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
