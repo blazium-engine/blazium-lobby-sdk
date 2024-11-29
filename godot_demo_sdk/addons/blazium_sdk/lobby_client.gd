@@ -2,7 +2,7 @@
 class_name LobbyClient
 extends BlaziumClient
 
-## A node used to connect to a lobby server. It can be used to do matchmaking. You care do operations such as create lobbys, join lobbys, etc.
+## A node used to connect to a lobby server. It can be used to do matchmaking. You can do operations such as create lobbies, join lobbies, etc.
 
 @export var server_url = "wss://lobby.blazium.app/connect"
 
