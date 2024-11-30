@@ -18,7 +18,7 @@ func _ready() -> void:
 	lobby_client.peer_named.connect(peer_named)
 	lobby_client.append_log.connect(append_log)
 
-	#lobby_client.server_url = "ws://localhost:8080/connect"
+	lobby_client.server_url = "ws://localhost:8080/connect"
 	lobby_client.connect_to_lobby("demo_game")
 
 func append_log(command: String, logs: String):
