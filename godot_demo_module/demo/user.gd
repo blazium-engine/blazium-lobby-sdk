@@ -12,25 +12,23 @@ func _ready() -> void:
 	lobby_client.lobby_joined.connect(lobby_joined)
 	lobby_client.lobby_left.connect(lobby_left)
 	lobby_client.lobby_sealed.connect(lobby_sealed)
-	lobby_client.lobby_unsealed.connect(lobby_unsealed)
 	lobby_client.peer_joined.connect(peer_joined)
 	lobby_client.peer_left.connect(peer_left)
 	lobby_client.peer_ready.connect(peer_ready)
-	lobby_client.peer_unready.connect(peer_unready)
 	lobby_client.peer_named.connect(peer_named)
 	lobby_client.append_log.connect(append_log)
 
 	#lobby_client.server_url = "ws://localhost:8080/connect"
-	lobby_client.connect_to_lobby("demo_game")
+	lobby_client.connect_to_lobby("demo lobby system")
 
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
 
-func lobby_data(data: String):
-	print("Callback: %s lobby_data %s" % [get_index(), data])
+func lobby_data(data: String, from_peer: String):
+	print("Callback: %s lobby_data %s %s" % [get_index(), data, from_peer])
 
-func data_to(data: String):
-	print("Callback: %s data_to %s" % [get_index(), data])
+func data_to(data: String, from_peer: String):
+	print("Callback: %s data_to %s %s" % [get_index(), data, from_peer])
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	print("Callback: %s lobby_created %s" % [get_index(), lobby.lobby_name])
@@ -51,20 +49,14 @@ func peer_joined(peer: LobbyPeer):
 func peer_left(peer: LobbyPeer, kicked: bool):
 	print("Callback: %s peer_left %s %s" % [get_index(), peer.id, kicked])
 	
-func peer_ready(peer: LobbyPeer):
-	print("Callback: %s peer_ready %s" % [get_index(), peer.id])
-
-func peer_unready(peer: LobbyPeer):
-	print("Callback: %s peer_unready %s" % [get_index(), peer.id])
+func peer_ready(peer: LobbyPeer, ready: bool):
+	print("Callback: %s peer_ready %s %s" % [get_index(), peer.id, ready])
 
 func peer_named(peer: LobbyPeer):
 	print("Callback: %s peer_named %s %s" % [get_index(), peer.id, peer.peer_name])
 
-func lobby_sealed():
-	print("Callback: %s lobby_sealed" % [get_index()])
-
-func lobby_unsealed():
-	print("Callback: %s lobby_unsealed" % [get_index()])
+func lobby_sealed(sealed: bool):
+	print("Callback: %s lobby_sealed %s" % [get_index(), sealed])
 
 func _on_button_pressed() -> void:
 	var item = command_toggle.get_item_text(command_toggle.selected)
@@ -114,17 +106,11 @@ func _on_button_pressed() -> void:
 			else:
 				print("Kick Result %s: Success" % get_index())
 		"lobby_ready":
-			var result :LobbyResult = await lobby_client.lobby_ready().finished
+			var result :LobbyResult = await lobby_client.lobby_ready(!lobby_client.peer.ready).finished
 			if result.has_error():
 				print("Ready Error %s: " % get_index(), result.error)
 			else:
 				print("Ready Result %s: Success" % get_index())
-		"lobby_unready":
-			var result :LobbyResult = await lobby_client.lobby_unready().finished
-			if result.has_error():
-				print("Unready Error %s: " % get_index(), result.error)
-			else:
-				print("Unready Result %s: Success" % get_index())
 		"set_name":
 			var result :LobbyResult = await lobby_client.set_peer_name(message).finished
 			if result.has_error():
@@ -132,17 +118,11 @@ func _on_button_pressed() -> void:
 			else:
 				print("Set Name %s: Success" % get_index())
 		"seal_lobby":
-			var result :LobbyResult = await lobby_client.seal_lobby().finished
+			var result :LobbyResult = await lobby_client.seal_lobby(!lobby_client.lobby.sealed).finished
 			if result.has_error():
 				print("Seal Error %s: " % get_index(), result.error)
 			else:
-				print("Seal Result %s: Success" % get_index())
-		"unseal_lobby":
-			var result :LobbyResult = await lobby_client.unseal_lobby().finished
-			if result.has_error():
-				print("Unseal Error %s: " % get_index(), result.error)
-			else:
-				print("Unseal Result %s: Success" % get_index())
+				print("Seal Result %s: " % get_index(), lobby_client.lobby.sealed)
 		"lobby_data":
 			var result :LobbyResult = await lobby_client.lobby_data(message).finished
 			if result.has_error():
