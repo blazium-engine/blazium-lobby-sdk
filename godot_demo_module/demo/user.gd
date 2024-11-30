@@ -19,16 +19,16 @@ func _ready() -> void:
 	lobby_client.append_log.connect(append_log)
 
 	#lobby_client.server_url = "ws://localhost:8080/connect"
-	lobby_client.connect_to_lobby("demo_game")
+	lobby_client.connect_to_lobby("demo lobby system")
 
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
 
-func lobby_data(data: String):
-	print("Callback: %s lobby_data %s" % [get_index(), data])
+func lobby_data(data: String, from_peer: String):
+	print("Callback: %s lobby_data %s %s" % [get_index(), data, from_peer])
 
-func data_to(data: String):
-	print("Callback: %s data_to %s" % [get_index(), data])
+func data_to(data: String, from_peer: String):
+	print("Callback: %s data_to %s %s" % [get_index(), data, from_peer])
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	print("Callback: %s lobby_created %s" % [get_index(), lobby.lobby_name])
