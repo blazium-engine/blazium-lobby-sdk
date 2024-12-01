@@ -24,11 +24,11 @@ func _ready() -> void:
 func append_log(command: String, logs: String):
 	logs_text.text = command + " " + logs
 
-func lobby_data(data: String, from_peer: String):
-	print("Callback: %s lobby_data %s %s" % [get_index(), data, from_peer])
+func lobby_data(data: String, from_peer: LobbyPeer):
+	print("Callback: %s lobby_data %s %s" % [get_index(), data, from_peer.peer_name])
 
-func data_to(data: String, from_peer: String):
-	print("Callback: %s data_to %s %s" % [get_index(), data, from_peer])
+func data_to(data: String, from_peer: LobbyPeer):
+	print("Callback: %s data_to %s %s" % [get_index(), data, from_peer.peer_name])
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	print("Callback: %s lobby_created %s" % [get_index(), lobby.lobby_name])
