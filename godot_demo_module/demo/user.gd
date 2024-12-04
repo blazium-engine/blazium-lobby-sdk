@@ -19,7 +19,7 @@ func _ready() -> void:
 	lobby_client.peer_named.connect(peer_named)
 	lobby_client.log_updated.connect(log_updated)
 
-	lobby_client.server_url = "ws://localhost:8080/connect"
+	#lobby_client.server_url = "ws://localhost:8080/connect"
 	lobby_client.connect_to_lobby()
 
 func log_updated(command: String, logs: String):
@@ -89,7 +89,7 @@ func _on_button_pressed() -> void:
 			else:
 				print("Leave Result %s: Success" % get_index())
 		"list_lobby":
-			var result :ListLobbyResult = await lobby_client.list_lobbies("test", 2, ["tag1"]).finished
+			var result :ListLobbyResult = await lobby_client.list_lobbies("", -1, ["tag1"]).finished
 			if result.has_error():
 				print("List Error %s: " % get_index(), result.error)
 			else:
