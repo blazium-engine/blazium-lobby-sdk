@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_46v45"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_mivcs"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_t7155"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_agv5y"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -67,7 +67,7 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "blazium demo id"
-lobby = SubResource("LobbyInfo_46v45")
-peer = SubResource("LobbyPeer_t7155")
+lobby = SubResource("LobbyInfo_mivcs")
+peer = SubResource("LobbyPeer_agv5y")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

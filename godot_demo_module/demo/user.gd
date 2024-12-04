@@ -32,7 +32,7 @@ func data_to(data: String, from_peer: LobbyPeer):
 	print("Callback: %s data_to %s" % [get_index(), data])
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
-	print("Callback: %s lobby_created %s" % [get_index(), lobby.lobby_name])
+	print("Callback: %s lobby_created %s %s" % [get_index(), lobby.lobby_name, lobby.tags])
 	for peer in peers:
 		print("Callback: %s lobby_created peer: " % get_index(), peer.id, " ", peer.peer_name, " ", peer.ready)
 
@@ -67,7 +67,7 @@ func _on_button_pressed() -> void:
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result : ViewLobbyResult = await lobby_client.create_lobby(message, 3, "").finished
+			var result : ViewLobbyResult = await lobby_client.create_lobby(message, ["tag1", "tag2", "tag3"], 4, "").finished
 			if result.has_error():
 				print("Create Error %s: " % get_index(), result.error)
 			else:
@@ -89,7 +89,7 @@ func _on_button_pressed() -> void:
 			else:
 				print("Leave Result %s: Success" % get_index())
 		"list_lobby":
-			var result :ListLobbyResult = await lobby_client.list_lobbies().finished
+			var result :ListLobbyResult = await lobby_client.list_lobbies("test", 2, ["tag1"]).finished
 			if result.has_error():
 				print("List Error %s: " % get_index(), result.error)
 			else:
