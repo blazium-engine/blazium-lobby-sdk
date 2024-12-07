@@ -166,7 +166,7 @@ func _on_button_pressed() -> void:
 			else:
 				print("Unseal Result %s: Success" % get_index())
 		"lobby_data":
-			var result :LobbyResult = await lobby_client.send_lobby_data(message).finished
+			var result :LobbyResult = await lobby_client.set_lobby_data(message).finished
 			if result.has_error():
 				print("Lobby Data Error %s: " % get_index(), result.error)
 			else:
