@@ -18,6 +18,7 @@ func _ready() -> void:
 	lobby_client.peer_messaged.connect(peer_messaged)
 	lobby_client.peer_named.connect(peer_named)
 	lobby_client.log_updated.connect(log_updated)
+	lobby_client.lobby_tagged.connect(lobby_tagged)
 
 	#lobby_client.server_url = "ws://localhost:8080/connect"
 	lobby_client.connect_to_lobby()
@@ -62,12 +63,15 @@ func peer_messaged(peer: LobbyPeer, message: String):
 func lobby_sealed(sealed: bool):
 	print("Callback: %s lobby_sealed" % [get_index()])
 
+func lobby_tagged(tags: Dictionary):
+	print("Callback: %s lobby_tagged tags %s" % [get_index(), tags])
+
 func _on_button_pressed() -> void:
 	var item = command_toggle.get_item_text(command_toggle.selected)
 	var message = message_text.text
 	match item:
 		"create_lobby":
-			var result : ViewLobbyResult = await lobby_client.create_lobby(message, ["tag1", "tag2", "tag3"], 4, "").finished
+			var result : ViewLobbyResult = await lobby_client.create_lobby(message, {"tag1": 1, "tag2": 2, "tag3": 3}, 4, "").finished
 			if result.has_error():
 				print("Create Error %s: " % get_index(), result.error)
 			else:
@@ -89,7 +93,7 @@ func _on_button_pressed() -> void:
 			else:
 				print("Leave Result %s: Success" % get_index())
 		"list_lobby":
-			var result :ListLobbyResult = await lobby_client.list_lobbies("", -1, ["tag1"]).finished
+			var result :ListLobbyResult = await lobby_client.list_lobbies({"tag1": null}).finished
 			if result.has_error():
 				print("List Error %s: " % get_index(), result.error)
 			else:
@@ -169,3 +173,9 @@ func _on_button_pressed() -> void:
 				print("Lobby Data Error %s: " % get_index(), result.error)
 			else:
 				print("Lobby Data Result %s: Success" % get_index())
+		"lobby_tags":
+			var result :LobbyResult = await lobby_client.set_lobby_tags({message: 1}).finished
+			if result.has_error():
+				print("Tags Error %s: " % get_index(), result.error)
+			else:
+				print("Tags Result %s: Success" % get_index())
