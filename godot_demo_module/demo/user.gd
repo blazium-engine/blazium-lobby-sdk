@@ -6,8 +6,8 @@ extends HBoxContainer
 @onready var logs_text := $Logs
 
 func _ready() -> void:
-	lobby_client.received_data.connect(lobby_data)
-	lobby_client.received_data_to.connect(data_to)
+	lobby_client.notification_received.connect(notification_received)
+	lobby_client.data_received.connect(data_received)
 	lobby_client.lobby_created.connect(lobby_created)
 	lobby_client.lobby_joined.connect(lobby_joined)
 	lobby_client.lobby_left.connect(lobby_left)
@@ -20,17 +20,21 @@ func _ready() -> void:
 	lobby_client.log_updated.connect(log_updated)
 	lobby_client.lobby_tagged.connect(lobby_tagged)
 
-	#lobby_client.server_url = "ws://localhost:8080/connect"
+	lobby_client.server_url = "ws://localhost:8080/connect"
 	lobby_client.connect_to_lobby()
 
 func log_updated(command: String, logs: String):
 	logs_text.text = command + " " + logs
 
-func lobby_data(data: String, from_peer: LobbyPeer):
+func lobby_notified(data: String, from_peer: LobbyPeer):
 	print("Callback: %s lobby_data %s" % [get_index(), data])
 
-func data_to(data: String, from_peer: LobbyPeer):
-	print("Callback: %s data_to %s" % [get_index(), data])
+func notification_received(data: String, from_peer: LobbyPeer):
+	print("Callback: %s notification_received %s %s" % [get_index(), data, from_peer.id])
+
+func data_received(data: String, from_peer: LobbyPeer):
+	print("Callback: %s data_received %s %s" % [get_index(), data, from_peer.id])
+	print(lobby_client.get_peer_data())
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	print("Callback: %s lobby_created %s %s" % [get_index(), lobby.lobby_name, lobby.tags])
@@ -167,12 +171,25 @@ func _on_button_pressed() -> void:
 				print("Lobby Data Error %s: " % get_index(), result.error)
 			else:
 				print("Lobby Data Result %s: Success" % get_index())
+				print(lobby_client.get_host_data())
 		"data_to":
-			var result :LobbyResult = await lobby_client.send_lobby_data_to("message", message).finished
+			var result :LobbyResult = await lobby_client.send_peer_data("message", message).finished
 			if result.has_error():
-				print("Lobby Data Error %s: " % get_index(), result.error)
+				print("Lobby Data To Error %s: " % get_index(), result.error)
 			else:
-				print("Lobby Data Result %s: Success" % get_index())
+				print("Lobby Data To Result %s: Success" % get_index())
+		"lobby_notify":
+			var result :LobbyResult = await lobby_client.notify_lobby(message).finished
+			if result.has_error():
+				print("Lobby Notify Lobby Error %s: " % get_index(), result.error)
+			else:
+				print("Lobby Notify Lobby Result %s: Success" % get_index())
+		"peer_notify":
+			var result :LobbyResult = await lobby_client.notify_peer("notification", message).finished
+			if result.has_error():
+				print("Lobby Notify Peer Error %s: " % get_index(), result.error)
+			else:
+				print("Lobby Notify Peer Result %s: Success" % get_index())
 		"lobby_tags":
 			var result :LobbyResult = await lobby_client.set_lobby_tags({message: 1}).finished
 			if result.has_error():

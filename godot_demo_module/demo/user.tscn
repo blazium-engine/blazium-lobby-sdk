@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_dn5sc"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_er5mg"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_jf758"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_i30wl"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -24,7 +24,7 @@ text = "Command:"
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 15
+item_count = 17
 popup/item_0/text = "create_lobby"
 popup/item_0/id = 0
 popup/item_1/text = "join_lobby"
@@ -55,6 +55,10 @@ popup/item_13/text = "lobby_chat"
 popup/item_13/id = 13
 popup/item_14/text = "lobby_tags"
 popup/item_14/id = 14
+popup/item_15/text = "lobby_notify"
+popup/item_15/id = 15
+popup/item_16/text = "peer_notify"
+popup/item_16/id = 16
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -69,7 +73,7 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "blazium demo id"
-lobby = SubResource("LobbyInfo_dn5sc")
-peer = SubResource("LobbyPeer_jf758")
+lobby = SubResource("LobbyInfo_er5mg")
+peer = SubResource("LobbyPeer_i30wl")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
