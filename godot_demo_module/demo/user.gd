@@ -6,8 +6,8 @@ extends HBoxContainer
 @onready var logs_text := $Logs
 
 func _ready() -> void:
-	lobby_client.notification_received.connect(notification_received)
-	lobby_client.data_received.connect(data_received)
+	lobby_client.lobby_notified.connect(lobby_notified)
+	lobby_client.received_data.connect(received_data)
 	lobby_client.lobby_created.connect(lobby_created)
 	lobby_client.lobby_joined.connect(lobby_joined)
 	lobby_client.lobby_left.connect(lobby_left)
@@ -29,11 +29,11 @@ func log_updated(command: String, logs: String):
 func lobby_notified(data: String, from_peer: LobbyPeer):
 	print("Callback: %s lobby_data %s" % [get_index(), data])
 
-func notification_received(data: String, from_peer: LobbyPeer):
-	print("Callback: %s notification_received %s %s" % [get_index(), data, from_peer.id])
+func lobby_notified(data: String, from_peer: LobbyPeer):
+	print("Callback: %s lobby_notified %s %s" % [get_index(), data, from_peer.id])
 
-func data_received(data: String, from_peer: LobbyPeer):
-	print("Callback: %s data_received %s %s" % [get_index(), data, from_peer.id])
+func received_data(data: String, from_peer: LobbyPeer):
+	print("Callback: %s received_data %s %s" % [get_index(), data, from_peer.id])
 	print(lobby_client.get_peer_data())
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
