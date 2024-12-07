@@ -20,7 +20,7 @@ func _ready() -> void:
 	lobby_client.log_updated.connect(log_updated)
 	lobby_client.lobby_tagged.connect(lobby_tagged)
 
-	lobby_client.server_url = "ws://localhost:8080/connect"
+	#lobby_client.server_url = "ws://localhost:8080/connect"
 	lobby_client.connect_to_lobby()
 
 func log_updated(command: String, logs: String):
