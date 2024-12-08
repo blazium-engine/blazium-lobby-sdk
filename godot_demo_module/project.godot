@@ -18,4 +18,3 @@ config/icon="res://LobbyClient.png"
 [display]
 
 window/stretch/mode="canvas_items"
-window/stretch/scale=1.5
