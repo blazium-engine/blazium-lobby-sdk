@@ -1,8 +1,8 @@
 extends Node
 
 @onready var user_scene := preload("res://demo/user.tscn")
-@onready var container := $VBoxContainer
-@onready var result_test := $VBoxContainer/RichTextLabel
+@export var container : VBoxContainer
+@export var result_test: RichTextLabel
 
 func _on_add_user_pressed() -> void:
 	var new_user = user_scene.instantiate()
