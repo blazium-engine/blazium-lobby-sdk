@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cdivmtjmjx2fc"]
+[gd_scene load_steps=2 format=3 uid="uid://cdivmtjmjx2fc"]
 
 [ext_resource type="Script" path="res://demo/demo.gd" id="3_5su1r"]
-[ext_resource type="PackedScene" uid="uid://8kf325oa7qos" path="res://demo/user.tscn" id="4_y7ebp"]
 
 [node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("container", "result_test")]
 script = ExtResource("3_5su1r")
@@ -47,9 +46,5 @@ text = "Results:
 scroll_following = true
 context_menu_enabled = true
 selection_enabled = true
-
-[node name="User" parent="ScrollContainer/VBoxContainer" node_paths=PackedStringArray("result_text") instance=ExtResource("4_y7ebp")]
-layout_mode = 2
-result_text = NodePath("../RichTextLabel")
 
 [connection signal="pressed" from="ScrollContainer/VBoxContainer/AddUser" to="." method="_on_add_user_pressed"]
