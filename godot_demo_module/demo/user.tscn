@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_n7rhf"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_fsptk"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_hj2sh"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_x88vr"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -16,12 +16,11 @@ layout_mode = 2
 [node name="Message" type="LineEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-placeholder_text = "Title:"
+placeholder_text = "Reconnection Token:"
 
 [node name="Message2" type="LineEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-placeholder_text = "Password:"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -29,17 +28,15 @@ layout_mode = 2
 [node name="Message" type="LineEdit" parent="VBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-placeholder_text = "Max Players:"
 
 [node name="Message2" type="LineEdit" parent="VBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-placeholder_text = "Tags (dict):"
 
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
-selected = 2
-item_count = 20
+selected = 0
+item_count = 24
 popup/item_0/text = "connect_to_lobby"
 popup/item_0/id = 18
 popup/item_1/text = "disconnect_from_lobby"
@@ -54,32 +51,40 @@ popup/item_5/text = "list_lobbies"
 popup/item_5/id = 3
 popup/item_6/text = "view_lobby"
 popup/item_6/id = 4
-popup/item_7/text = "lobby_ready"
-popup/item_7/id = 10
-popup/item_8/text = "lobby_unready"
-popup/item_8/id = 13
-popup/item_9/text = "kick_peer"
-popup/item_9/id = 6
-popup/item_10/text = "seal_lobby"
-popup/item_10/id = 7
-popup/item_11/text = "unseal_lobby"
-popup/item_11/id = 8
-popup/item_12/text = "lobby_data"
-popup/item_12/id = 5
-popup/item_13/text = "data_to"
-popup/item_13/id = 9
-popup/item_14/text = "data_all"
-popup/item_14/id = 17
-popup/item_15/text = "set_name"
-popup/item_15/id = 12
-popup/item_16/text = "lobby_chat"
-popup/item_16/id = 13
-popup/item_17/text = "lobby_tags"
-popup/item_17/id = 14
-popup/item_18/text = "lobby_notify"
-popup/item_18/id = 15
-popup/item_19/text = "peer_notify"
-popup/item_19/id = 16
+popup/item_7/text = "kick_peer"
+popup/item_7/id = 6
+popup/item_8/text = "set_lobby_ready(true)"
+popup/item_8/id = 7
+popup/item_9/text = "set_lobby_ready(false)"
+popup/item_9/id = 8
+popup/item_10/text = "set_lobby_sealed(true)"
+popup/item_10/id = 5
+popup/item_11/text = "set_lobby_sealed(false)"
+popup/item_11/id = 9
+popup/item_12/text = "send_chat_message"
+popup/item_12/id = 17
+popup/item_13/text = "set_peer_name"
+popup/item_13/id = 12
+popup/item_14/text = "add_lobby_data"
+popup/item_14/id = 15
+popup/item_15/text = "del_lobby_data"
+popup/item_15/id = 16
+popup/item_16/text = "add_peer_data"
+popup/item_16/id = 21
+popup/item_17/text = "del_peer_data"
+popup/item_17/id = 22
+popup/item_18/text = "add_peers_data"
+popup/item_18/id = 24
+popup/item_19/text = "del_peers_data"
+popup/item_19/id = 25
+popup/item_20/text = "notify_lobby"
+popup/item_20/id = 25
+popup/item_21/text = "notify_peer"
+popup/item_21/id = 26
+popup/item_22/text = "add_lobby_tags"
+popup/item_22/id = 27
+popup/item_23/text = "del_lobby_tag"
+popup/item_23/id = 28
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -94,8 +99,8 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "blazium_demo_id"
-lobby = SubResource("LobbyInfo_n7rhf")
-peer = SubResource("LobbyPeer_hj2sh")
+lobby = SubResource("LobbyInfo_fsptk")
+peer = SubResource("LobbyPeer_x88vr")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
