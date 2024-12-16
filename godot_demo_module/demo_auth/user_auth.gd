@@ -156,6 +156,9 @@ func _on_command_toggle_item_selected(index: int) -> void:
 			message_text.placeholder_text = "Data (dict):"
 		"del_lobby_tag":
 			message_text.placeholder_text = "Keys (array):"
+		"lobby_call":
+			message_text.placeholder_text = "Function :"
+			message_text2.placeholder_text = "Args (array):"
 
 func parse_json_or_empty(str_json: String):
 	var dict = {}
@@ -256,54 +259,6 @@ func _on_button_pressed() -> void:
 				write_result("Set Name Error %s: %s" % [get_index(), result.error])
 			else:
 				write_result("Set Name %s: Success" % get_index())
-		"add_lobby_data":
-			var result :LobbyResult = await lobby_client.add_lobby_data(parse_json_or_empty(message), parse_bool(message2)).finished
-			if result.has_error():
-				write_result("Set Lobby Data Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Set Lobby Data Result %s: Success" % get_index())
-		"del_lobby_data":
-			var result :LobbyResult = await lobby_client.del_lobby_data(parse_json_or_empty(message), parse_bool(message2)).finished
-			if result.has_error():
-				write_result("Delete Lobby Data Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Delete Lobby Data Result %s: Success" % get_index())
-		"add_peer_data":
-			var result :LobbyResult = await lobby_client.add_peer_data(parse_json_or_empty(message), message2, parse_bool(message3)).finished
-			if result.has_error():
-				write_result("Set Peer Data Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Set Peer Data Result %s: Success" % get_index())
-		"del_peer_data":
-			var result :LobbyResult = await lobby_client.del_peer_data(parse_json_or_empty(message), message2, parse_bool(message3)).finished
-			if result.has_error():
-				write_result("Delete Peer Data Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Delete Peer Data Result %s: Success" % get_index())
-		"add_peers_data":
-			var result :LobbyResult = await lobby_client.add_peers_data(parse_json_or_empty(message), parse_bool(message2)).finished
-			if result.has_error():
-				write_result("Set Peers Data Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Set Peers Data Result %s: Success" % get_index())
-		"del_peers_data":
-			var result :LobbyResult = await lobby_client.del_peers_data(parse_json_or_empty(message), parse_bool(message2)).finished
-			if result.has_error():
-				write_result("Delete Peers Data Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Delete Peers Data %s: Success" % get_index())
-		"notify_lobby":
-			var result :LobbyResult = await lobby_client.notify_lobby(message).finished
-			if result.has_error():
-				write_result("Lobby Notify Lobby Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Lobby Notify Lobby Result %s: Success" % get_index())
-		"notify_peer":
-			var result :LobbyResult = await lobby_client.notify_peer(message, message2).finished
-			if result.has_error():
-				write_result("Lobby Notify Peer Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("Lobby Notify Peer Result %s: Success" % get_index())
 		"add_lobby_tags":
 			var result :LobbyResult = await lobby_client.add_lobby_tags(parse_json_or_empty(message)).finished
 			if result.has_error():
@@ -316,3 +271,9 @@ func _on_button_pressed() -> void:
 				write_result("Tags Error %s: %s" % [get_index(), result.error])
 			else:
 				write_result("Tags Result %s: Success" % get_index())
+		"lobby_call":
+			var result :AuthoritativeResult = await lobby_client.lobby_call(message, parse_json_or_empty(message2)).finished
+			if result.has_error():
+				write_result("Lobby Call Error %s: %s" % [get_index(), result.error])
+			else:
+				write_result("Lobby Call %s: %s" % [get_index(), result.get_result()])

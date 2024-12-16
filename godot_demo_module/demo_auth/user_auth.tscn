@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_g68w7"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_h25cu"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_0wu8h"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_e4bt2"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -81,8 +81,8 @@ editable = false
 
 [node name="LobbyClient" type="AuthoritativeClient" parent="."]
 game_id = "blazium_demo_id"
-lobby = SubResource("LobbyInfo_g68w7")
-peer = SubResource("LobbyPeer_0wu8h")
+lobby = SubResource("LobbyInfo_h25cu")
+peer = SubResource("LobbyPeer_e4bt2")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
