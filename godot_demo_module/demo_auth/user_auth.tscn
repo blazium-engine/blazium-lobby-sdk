@@ -1,14 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://8kf325oa7qos"]
+[gd_scene load_steps=4 format=3 uid="uid://detlob8in37l7"]
 
-[ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
+[ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_ky4mi"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_guacl"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_8biay"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_3leto"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
-script = ExtResource("1_iyd0j")
+script = ExtResource("1_rjot1")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -36,7 +36,7 @@ layout_mode = 2
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 24
+item_count = 16
 popup/item_0/text = "connect_to_lobby"
 popup/item_0/id = 18
 popup/item_1/text = "disconnect_from_lobby"
@@ -65,26 +65,10 @@ popup/item_12/text = "send_chat_message"
 popup/item_12/id = 17
 popup/item_13/text = "set_peer_name"
 popup/item_13/id = 12
-popup/item_14/text = "add_lobby_data"
-popup/item_14/id = 15
-popup/item_15/text = "del_lobby_data"
-popup/item_15/id = 16
-popup/item_16/text = "add_peer_data"
-popup/item_16/id = 21
-popup/item_17/text = "del_peer_data"
-popup/item_17/id = 22
-popup/item_18/text = "add_peers_data"
-popup/item_18/id = 24
-popup/item_19/text = "del_peers_data"
-popup/item_19/id = 25
-popup/item_20/text = "notify_lobby"
-popup/item_20/id = 25
-popup/item_21/text = "notify_peer"
-popup/item_21/id = 26
-popup/item_22/text = "add_lobby_tags"
-popup/item_22/id = 27
-popup/item_23/text = "del_lobby_tag"
-popup/item_23/id = 28
+popup/item_14/text = "add_lobby_tags"
+popup/item_14/id = 27
+popup/item_15/text = "del_lobby_tag"
+popup/item_15/id = 28
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -97,10 +81,10 @@ size_flags_horizontal = 3
 text = "Logs:"
 editable = false
 
-[node name="LobbyClient" type="LobbyClient" parent="."]
+[node name="LobbyClient" type="AuthoritativeClient" parent="."]
 game_id = "blazium_demo_id"
-lobby = SubResource("LobbyInfo_ky4mi")
-peer = SubResource("LobbyPeer_8biay")
+lobby = SubResource("LobbyInfo_guacl")
+peer = SubResource("LobbyPeer_3leto")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
