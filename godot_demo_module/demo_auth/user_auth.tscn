@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_guacl"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_keuvr"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_3leto"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_v8vus"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -21,6 +21,7 @@ placeholder_text = "Reconnection Token:"
 [node name="Message2" type="LineEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+placeholder_text = "Game ID Override:"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -28,6 +29,7 @@ layout_mode = 2
 [node name="Message" type="LineEdit" parent="VBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+placeholder_text = "Server URL Override:"
 
 [node name="Message2" type="LineEdit" parent="VBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
@@ -82,9 +84,9 @@ text = "Logs:"
 editable = false
 
 [node name="LobbyClient" type="AuthoritativeClient" parent="."]
-game_id = "blazium_demo_id"
-lobby = SubResource("LobbyInfo_guacl")
-peer = SubResource("LobbyPeer_3leto")
+game_id = "echo"
+lobby = SubResource("LobbyInfo_keuvr")
+peer = SubResource("LobbyPeer_v8vus")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

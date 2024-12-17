@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_ky4mi"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_juhsh"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_8biay"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_o7j84"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -21,6 +21,7 @@ placeholder_text = "Reconnection Token:"
 [node name="Message2" type="LineEdit" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+placeholder_text = "Game ID Override:"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -28,6 +29,7 @@ layout_mode = 2
 [node name="Message" type="LineEdit" parent="VBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+placeholder_text = "Server URL Override:"
 
 [node name="Message2" type="LineEdit" parent="VBoxContainer2"]
 custom_minimum_size = Vector2(200, 0)
@@ -98,9 +100,9 @@ text = "Logs:"
 editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
-game_id = "blazium_demo_id"
-lobby = SubResource("LobbyInfo_ky4mi")
-peer = SubResource("LobbyPeer_8biay")
+game_id = "demo"
+lobby = SubResource("LobbyInfo_juhsh")
+peer = SubResource("LobbyPeer_o7j84")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

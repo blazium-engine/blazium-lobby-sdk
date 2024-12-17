@@ -27,8 +27,6 @@ func _ready() -> void:
 	lobby_client.log_updated.connect(log_updated)
 	lobby_client.lobby_tagged.connect(lobby_tagged)
 
-	#lobby_client.server_url = "ws://localhost:8080/connect"
-
 func write_result(text):
 	result_text.text += text + "\n"
 
@@ -97,6 +95,8 @@ func _on_command_toggle_item_selected(index: int) -> void:
 	match item:
 		"connect_to_lobby":
 			message_text.placeholder_text = "Reconnection Token:"
+			message_text2.placeholder_text = "Game ID Override:"
+			message_text3.placeholder_text = "Server URL Override:"
 		"disconnect_from_lobby":
 			pass
 		"create_lobby":
@@ -182,10 +182,18 @@ func _on_button_pressed() -> void:
 	match item:
 		"connect_to_lobby":
 			lobby_client.reconnection_token = message
+			if message2 != "":
+				lobby_client.game_id = message2
+			else:
+				lobby_client.game_id = "demo"
+			if message3 != "":
+				lobby_client.server_url = message3
+			else:
+				lobby_client.server_url = "wss://lobby.blazium.app/connect"
 			if !lobby_client.connect_to_lobby():
 				write_result("Connect Error")
 			else:
-				write_result("Connect Success")
+				write_result("Connecting")
 		"disconnect_from_lobby":
 			lobby_client.disconnect_from_lobby()
 		"create_lobby":

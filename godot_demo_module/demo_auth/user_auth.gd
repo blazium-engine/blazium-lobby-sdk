@@ -27,8 +27,6 @@ func _ready() -> void:
 	lobby_client.log_updated.connect(log_updated)
 	lobby_client.lobby_tagged.connect(lobby_tagged)
 
-	#lobby_client.server_url = "ws://localhost:8080/connect"
-
 func write_result(text):
 	result_text.text += text + "\n"
 
@@ -46,10 +44,8 @@ func received_peer_data(data: Dictionary, to_peer: LobbyPeer, is_private: bool):
 	if is_private:
 		write_result("Private data %s" % lobby_client.peer_data)
 
-func received_lobby_data(data: Dictionary, is_private: bool):
-	write_result("Callback: %s [b]received_lobby_data[/b] data %s is_private %s" % [get_index(), data, is_private])
-	if is_private:
-		write_result("Private data %s" % lobby_client.host_data)
+func received_lobby_data(data: Dictionary):
+	write_result("Callback: %s [b]received_lobby_data[/b] data %s" % [get_index(), data])
 
 func lobby_notified(data: String, from_peer: LobbyPeer):
 	write_result("Callback: %s [b]lobby_notified[/b] data %s from_peer %s" % [get_index(), data, from_peer.id])
@@ -97,6 +93,8 @@ func _on_command_toggle_item_selected(index: int) -> void:
 	match item:
 		"connect_to_lobby":
 			message_text.placeholder_text = "Reconnection Token:"
+			message_text2.placeholder_text = "Game ID Override:"
+			message_text3.placeholder_text = "Server URL Override:"
 		"disconnect_from_lobby":
 			pass
 		"create_lobby":
@@ -182,10 +180,19 @@ func _on_button_pressed() -> void:
 	match item:
 		"connect_to_lobby":
 			lobby_client.reconnection_token = message
+			if message2 != "":
+				lobby_client.game_id = message2
+			else:
+				lobby_client.game_id = "echo"
+			if message3 != "":
+				lobby_client.server_url = message3
+			else:
+				#lobby_client.server_url = "wss://lobby.blazium.app/connect"
+				lobby_client.server_url = "ws://localhost:8080/connect"
 			if !lobby_client.connect_to_lobby():
 				write_result("Connect Error")
 			else:
-				write_result("Connect Success")
+				write_result("Connecting")
 		"disconnect_from_lobby":
 			lobby_client.disconnect_from_lobby()
 		"create_lobby":
@@ -193,7 +200,7 @@ func _on_button_pressed() -> void:
 			if result.has_error():
 				write_result("Create Error %s: %s" % [get_index(), result.error])
 			else:
-				write_result("Create Result %s: lobby_id [color=red]%s[/color] max_players %s sealed %s" % [get_index(), result.lobby.id, result.lobby.max_players, result.lobby.sealed])
+				write_result("Create Result %s: lobby_id [color=red]%s[/color] max_players %s sealed %s public_data %s" % [get_index(), result.lobby.id, result.lobby.max_players, result.lobby.sealed, result.lobby.data])
 				for peer in result.peers:
 					write_result("Create Peer %s: peer_id [color=blue]%s[/color] peer_name %s ready  %s" % [get_index(), peer.id, peer.peer_name, peer.ready])
 		"join_lobby":
@@ -201,7 +208,7 @@ func _on_button_pressed() -> void:
 			if result.has_error():
 				write_result("Join Error %s: %s" % [get_index(), result.error])
 			else:
-				write_result("Join Result %s: host [color=blue]%s[/color] max_players %s sealed %s data %s private_data %s peer_data %s private_peer_data %s" % [get_index(), result.lobby.host, result.lobby.max_players, result.lobby.sealed, result.lobby.data, lobby_client.host_data, lobby_client.peer.data, lobby_client.peer_data])
+				write_result("Join Result %s: host [color=blue]%s[/color] max_players %s sealed %s data %s peer_data %s private_peer_data %s" % [get_index(), result.lobby.host, result.lobby.max_players, result.lobby.sealed, result.lobby.data, lobby_client.peer.data, lobby_client.peer_data])
 				for peer in result.peers:
 					write_result("Join Peer %s: peer_id [color=blue]%s[/color] peer_name %s ready %s" % [get_index(), peer.id, peer.peer_name, peer.ready])
 		"leave_lobby":
