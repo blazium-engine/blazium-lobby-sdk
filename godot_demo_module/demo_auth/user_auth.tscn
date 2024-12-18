@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_bvcxk"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_4oi3t"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_rhy0q"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_fatva"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -83,8 +83,8 @@ editable = false
 
 [node name="AuthoritativeLobbyClient" type="AuthoritativeLobbyClient" parent="."]
 game_id = "echo"
-lobby = SubResource("LobbyInfo_bvcxk")
-peer = SubResource("LobbyPeer_rhy0q")
+lobby = SubResource("LobbyInfo_4oi3t")
+peer = SubResource("LobbyPeer_fatva")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
