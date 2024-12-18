@@ -113,9 +113,6 @@ func _on_command_toggle_item_selected(index: int) -> void:
 			message_text3.placeholder_text = "Count:"
 		"leave_lobby":
 			pass
-		"view_lobby":
-			message_text.placeholder_text = "Lobby ID:"
-			message_text2.placeholder_text = "Password:"
 		"kick_peer":
 			message_text.placeholder_text = "Peer ID:"
 		"set_lobby_ready(true)":
@@ -225,14 +222,6 @@ func _on_button_pressed() -> void:
 			else:
 				for lobby in result.lobbies:
 					write_result("List Result %s: host [color=blue]%s[/color] lobby_id [color=red]%s[/color] hostname %s max_players %s playeres %s sealed %s lobby_name %s" % [get_index(), lobby.host, lobby.id, lobby.host_name, lobby.max_players, lobby.players, lobby.sealed, lobby.lobby_name])
-		"view_lobby":
-			var result :ViewLobbyResult = await lobby_client.view_lobby(message, message2).finished
-			if result.has_error():
-				write_result("View Error %s: %s" % [get_index(), result.error])
-			else:
-				write_result("View Result %s: host [color=blue]%s[/color] max_players %s sealed %s" % [get_index(), result.lobby.host, result.lobby.max_players, result.lobby.sealed])
-				for peer in result.peers:
-					write_result("View Peer %s: peer_id [color=blue]%s[/color] peer_name %s ready %s" % [get_index(), peer.id, peer.peer_name, peer.ready])
 		"kick_peer":
 			var result :LobbyResult = await lobby_client.kick_peer(message).finished
 			if result.has_error():

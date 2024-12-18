@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_juhsh"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_af434"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_o7j84"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_hwxua"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -38,7 +38,7 @@ layout_mode = 2
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 24
+item_count = 23
 popup/item_0/text = "connect_to_lobby"
 popup/item_0/id = 18
 popup/item_1/text = "disconnect_from_lobby"
@@ -51,42 +51,40 @@ popup/item_4/text = "leave_lobby"
 popup/item_4/id = 2
 popup/item_5/text = "list_lobbies"
 popup/item_5/id = 3
-popup/item_6/text = "view_lobby"
-popup/item_6/id = 4
-popup/item_7/text = "kick_peer"
-popup/item_7/id = 6
-popup/item_8/text = "set_lobby_ready(true)"
-popup/item_8/id = 7
-popup/item_9/text = "set_lobby_ready(false)"
-popup/item_9/id = 8
-popup/item_10/text = "set_lobby_sealed(true)"
-popup/item_10/id = 5
-popup/item_11/text = "set_lobby_sealed(false)"
-popup/item_11/id = 9
-popup/item_12/text = "send_chat_message"
-popup/item_12/id = 17
-popup/item_13/text = "set_peer_name"
-popup/item_13/id = 12
-popup/item_14/text = "add_lobby_data"
-popup/item_14/id = 15
-popup/item_15/text = "del_lobby_data"
-popup/item_15/id = 16
-popup/item_16/text = "add_peer_data"
-popup/item_16/id = 21
-popup/item_17/text = "del_peer_data"
-popup/item_17/id = 22
-popup/item_18/text = "add_peers_data"
-popup/item_18/id = 24
-popup/item_19/text = "del_peers_data"
+popup/item_6/text = "kick_peer"
+popup/item_6/id = 6
+popup/item_7/text = "set_lobby_ready(true)"
+popup/item_7/id = 7
+popup/item_8/text = "set_lobby_ready(false)"
+popup/item_8/id = 8
+popup/item_9/text = "set_lobby_sealed(true)"
+popup/item_9/id = 5
+popup/item_10/text = "set_lobby_sealed(false)"
+popup/item_10/id = 9
+popup/item_11/text = "send_chat_message"
+popup/item_11/id = 17
+popup/item_12/text = "set_peer_name"
+popup/item_12/id = 12
+popup/item_13/text = "add_lobby_data"
+popup/item_13/id = 15
+popup/item_14/text = "del_lobby_data"
+popup/item_14/id = 16
+popup/item_15/text = "add_peer_data"
+popup/item_15/id = 21
+popup/item_16/text = "del_peer_data"
+popup/item_16/id = 22
+popup/item_17/text = "add_peers_data"
+popup/item_17/id = 24
+popup/item_18/text = "del_peers_data"
+popup/item_18/id = 25
+popup/item_19/text = "notify_lobby"
 popup/item_19/id = 25
-popup/item_20/text = "notify_lobby"
-popup/item_20/id = 25
-popup/item_21/text = "notify_peer"
-popup/item_21/id = 26
-popup/item_22/text = "add_lobby_tags"
-popup/item_22/id = 27
-popup/item_23/text = "del_lobby_tag"
-popup/item_23/id = 28
+popup/item_20/text = "notify_peer"
+popup/item_20/id = 26
+popup/item_21/text = "add_lobby_tags"
+popup/item_21/id = 27
+popup/item_22/text = "del_lobby_tag"
+popup/item_22/id = 28
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -101,8 +99,8 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "demo"
-lobby = SubResource("LobbyInfo_juhsh")
-peer = SubResource("LobbyPeer_o7j84")
+lobby = SubResource("LobbyInfo_af434")
+peer = SubResource("LobbyPeer_hwxua")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
