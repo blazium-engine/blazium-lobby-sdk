@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_af434"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_46nx0"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_hwxua"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_iqxru"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -99,8 +99,8 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "demo"
-lobby = SubResource("LobbyInfo_af434")
-peer = SubResource("LobbyPeer_hwxua")
+lobby = SubResource("LobbyInfo_46nx0")
+peer = SubResource("LobbyPeer_iqxru")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

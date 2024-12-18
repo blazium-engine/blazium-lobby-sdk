@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-@onready var lobby_client : AuthoritativeClient = $LobbyClient
+@onready var lobby_client : AuthoritativeLobbyClient = $AuthoritativeLobbyClient
 @onready var message_text := $VBoxContainer/Message
 @onready var message_text2 := $VBoxContainer/Message2
 @onready var message_text3 := $VBoxContainer2/Message
