@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_4oi3t"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_1iegl"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_fatva"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_l54qq"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -38,7 +38,7 @@ layout_mode = 2
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 15
+item_count = 16
 popup/item_0/text = "connect_to_lobby"
 popup/item_0/id = 18
 popup/item_1/text = "disconnect_from_lobby"
@@ -63,12 +63,14 @@ popup/item_10/text = "set_lobby_sealed(false)"
 popup/item_10/id = 9
 popup/item_11/text = "send_chat_message"
 popup/item_11/id = 17
-popup/item_12/text = "set_peer_name"
-popup/item_12/id = 12
-popup/item_13/text = "add_lobby_tags"
-popup/item_13/id = 27
-popup/item_14/text = "del_lobby_tag"
-popup/item_14/id = 28
+popup/item_12/text = "add_lobby_tags"
+popup/item_12/id = 27
+popup/item_13/text = "del_lobby_tag"
+popup/item_13/id = 28
+popup/item_14/text = "add_peer_user_data"
+popup/item_14/id = 14
+popup/item_15/text = "del_peer_user_data"
+popup/item_15/id = 15
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -83,8 +85,8 @@ editable = false
 
 [node name="AuthoritativeLobbyClient" type="AuthoritativeLobbyClient" parent="."]
 game_id = "echo"
-lobby = SubResource("LobbyInfo_4oi3t")
-peer = SubResource("LobbyPeer_fatva")
+lobby = SubResource("LobbyInfo_1iegl")
+peer = SubResource("LobbyPeer_l54qq")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

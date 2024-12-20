@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_ly0c2"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_w0ryq"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_dsjus"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_6dssr"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -38,7 +38,7 @@ layout_mode = 2
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 23
+item_count = 25
 popup/item_0/text = "connect_to_lobby"
 popup/item_0/id = 18
 popup/item_1/text = "disconnect_from_lobby"
@@ -85,6 +85,10 @@ popup/item_21/text = "add_lobby_tags"
 popup/item_21/id = 27
 popup/item_22/text = "del_lobby_tag"
 popup/item_22/id = 28
+popup/item_23/text = "add_peer_user_data"
+popup/item_23/id = 23
+popup/item_24/text = "del_peer_user_data"
+popup/item_24/id = 24
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -99,8 +103,8 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "demo"
-lobby = SubResource("LobbyInfo_ly0c2")
-peer = SubResource("LobbyPeer_dsjus")
+lobby = SubResource("LobbyInfo_w0ryq")
+peer = SubResource("LobbyPeer_6dssr")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
