@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://demo/user.gd" id="1_iyd0j"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_5hphn"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_70ux8"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_sgf80"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_aq2fl"]
 
-[node name="User" type="HBoxContainer"]
+[node name="User2" type="HBoxContainer"]
 size_flags_horizontal = 3
 script = ExtResource("1_iyd0j")
 
@@ -103,8 +103,8 @@ editable = false
 
 [node name="LobbyClient" type="LobbyClient" parent="."]
 game_id = "demo"
-lobby = SubResource("LobbyInfo_5hphn")
-peer = SubResource("LobbyPeer_sgf80")
+lobby = SubResource("LobbyInfo_70ux8")
+peer = SubResource("LobbyPeer_aq2fl")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

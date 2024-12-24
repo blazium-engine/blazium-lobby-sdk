@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_gxpqo"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_81k6h"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_uq74f"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_sy8wj"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -38,7 +38,7 @@ layout_mode = 2
 [node name="CommandToggle" type="OptionButton" parent="."]
 layout_mode = 2
 selected = 0
-item_count = 16
+item_count = 17
 popup/item_0/text = "connect_to_lobby"
 popup/item_0/id = 18
 popup/item_1/text = "disconnect_from_lobby"
@@ -71,6 +71,8 @@ popup/item_14/text = "add_peer_user_data"
 popup/item_14/id = 14
 popup/item_15/text = "del_peer_user_data"
 popup/item_15/id = 15
+popup/item_16/text = "lobby_call"
+popup/item_16/id = 16
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
@@ -85,8 +87,8 @@ editable = false
 
 [node name="AuthoritativeLobbyClient" type="AuthoritativeLobbyClient" parent="."]
 game_id = "echo"
-lobby = SubResource("LobbyInfo_gxpqo")
-peer = SubResource("LobbyPeer_uq74f")
+lobby = SubResource("LobbyInfo_81k6h")
+peer = SubResource("LobbyPeer_sy8wj")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
