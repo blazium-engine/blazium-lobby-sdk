@@ -131,6 +131,9 @@ func _on_command_toggle_item_selected(index: int) -> void:
 			message_text.placeholder_text = "Data (dict):"
 		"del_lobby_tag":
 			message_text.placeholder_text = "Keys (array):"
+		"lobby_call":
+			message_text.placeholder_text = "Function:"
+			message_text2.placeholder_text = "Args (array):"
 
 func parse_json_or_empty(str_json: String):
 	var dict = {}
@@ -161,8 +164,8 @@ func _on_button_pressed() -> void:
 			if message3 != "":
 				lobby_client.server_url = message3
 			else:
-				lobby_client.server_url = "wss://authlobby.blazium.app/connect"
-				#lobby_client.server_url = "ws://localhost:8080/connect"
+				#lobby_client.server_url = "wss://authlobby.blazium.app/connect"
+				lobby_client.server_url = "ws://localhost:8080/connect"
 			if !lobby_client.connect_to_lobby():
 				write_result("Connect Error")
 			else:
@@ -258,3 +261,9 @@ func _on_button_pressed() -> void:
 				write_result("Tags Error %s: %s" % [get_index(), result.error])
 			else:
 				write_result("Tags Result %s: Success" % get_index())
+		"lobby_call":
+			var result :AuthoritativeLobbyResult = await lobby_client.lobby_call(message, parse_json_or_empty(message2)).finished
+			if result.has_error():
+				write_result("Lobby Call Error %s: %s" % [get_index(), result.error])
+			else:
+				write_result("Lobby Call Result %s: %s" % [get_index(), result.get_result()])
