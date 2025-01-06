@@ -13,6 +13,7 @@ func _ready() -> void:
 	lobby_client.connected_to_lobby.connect(connected_to_lobby)
 	lobby_client.disconnected_from_lobby.connect(disconnected_from_lobby)
 	lobby_client.lobby_notified.connect(lobby_notified)
+	lobby_client.lobbies_listed.connect(lobbies_listed)
 	lobby_client.received_peer_data.connect(received_peer_data)
 	lobby_client.received_lobby_data.connect(received_lobby_data)
 	lobby_client.received_peer_user_data.connect(received_peer_user_data)
@@ -51,6 +52,11 @@ func received_lobby_data(data: Dictionary, is_private: bool):
 
 func lobby_notified(data: String, from_peer: LobbyPeer):
 	write_result("Callback: %s [b]lobby_notified[/b] data %s from_peer %s" % [get_index(), data, from_peer.id])
+
+func lobbies_listed(lobbies: Array[LobbyInfo]):
+	write_result("Callback: %s [b]lobbies_listed[/b]:" % get_index())
+	for lobby in lobbies:
+		write_result("Callback: %s [b]lobbies_listed[/b] id %s name %s" % [get_index(), lobby.id, lobby.lobby_name])
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
 	write_result("Callback: %s [b]lobby_created[/b] lobby_name %s tags %s max_players %s has_password %s" % [get_index(), lobby.lobby_name, lobby.tags, lobby.max_players, str(lobby.password_protected)])
@@ -108,9 +114,7 @@ func _on_command_toggle_item_selected(index: int) -> void:
 			message_text.placeholder_text = "Lobby ID:"
 			message_text2.placeholder_text = "Password:"
 		"list_lobbies":
-			message_text.placeholder_text = "Tags (dict):"
-			message_text2.placeholder_text = "Start:"
-			message_text3.placeholder_text = "Count:"
+			pass
 		"leave_lobby":
 			pass
 		"kick_peer":
@@ -197,7 +201,7 @@ func _on_button_pressed() -> void:
 		"disconnect_from_lobby":
 			lobby_client.disconnect_from_lobby()
 		"create_lobby":
-			var result : ViewLobbyResult = await lobby_client.create_lobby(message, parse_json_or_empty(message4), int(message3), message2).finished
+			var result : ViewLobbyResult = await lobby_client.create_lobby(message, false, parse_json_or_empty(message4), int(message3), message2).finished
 			if result.has_error():
 				write_result("Create Error %s: %s" % [get_index(), result.error])
 			else:
@@ -219,12 +223,11 @@ func _on_button_pressed() -> void:
 			else:
 				write_result("Leave Result %s: Success" % get_index())
 		"list_lobbies":
-			var result :ListLobbyResult = await lobby_client.list_lobbies(parse_json_or_empty(message), int(message2), int(message3)).finished
+			var result :LobbyResult = await lobby_client.list_lobbies().finished
 			if result.has_error():
 				write_result("List Error %s: %s" % [get_index(), result.error])
 			else:
-				for lobby in result.lobbies:
-					write_result("List Result %s: host [color=blue]%s[/color] lobby_id [color=red]%s[/color] max_players %s playeres %s sealed %s lobby_name %s" % [get_index(), lobby.host, lobby.id, lobby.max_players, lobby.players, lobby.sealed, lobby.lobby_name])
+				write_result("List Result %s: Success" % get_index())
 		"kick_peer":
 			var result :LobbyResult = await lobby_client.kick_peer(message).finished
 			if result.has_error():
