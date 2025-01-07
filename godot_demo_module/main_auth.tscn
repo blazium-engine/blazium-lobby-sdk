@@ -16,7 +16,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(1, 1, 1, 0.270588)
 theme_override_font_sizes/font_size = 100
-text = "Blazium Scriptable Lobby"
+text = "Blazium Scripted Lobby"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -38,7 +38,7 @@ text = "+ Create User"
 
 [node name="ChangeScene" type="Button" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Change to Non-Scriptable Lobby"
+text = "Change to Non-Scripted Lobby"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
