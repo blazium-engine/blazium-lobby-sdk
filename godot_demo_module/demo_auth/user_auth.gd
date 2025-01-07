@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-@onready var lobby_client : AuthoritativeLobbyClient = $AuthoritativeLobbyClient
+@onready var lobby_client : ScriptableLobbyClient = $ScriptableLobbyClient
 @onready var message_text := $VBoxContainer/Message
 @onready var message_text2 := $VBoxContainer/Message2
 @onready var message_text3 := $VBoxContainer2/Message
@@ -262,7 +262,7 @@ func _on_button_pressed() -> void:
 			else:
 				write_result("Tags Result %s: Success" % get_index())
 		"lobby_call":
-			var result :AuthoritativeLobbyResult = await lobby_client.lobby_call(message, parse_json_or_empty(message2)).finished
+			var result :ScriptableLobbyResult = await lobby_client.lobby_call(message, parse_json_or_empty(message2)).finished
 			if result.has_error():
 				write_result("Lobby Call Error %s: %s" % [get_index(), result.error])
 			else:
