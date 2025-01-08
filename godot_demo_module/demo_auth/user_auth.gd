@@ -165,7 +165,7 @@ func _on_button_pressed() -> void:
 			if message3 != "":
 				lobby_client.server_url = message3
 			else:
-				lobby_client.server_url = "wss://authlobby.blazium.app/connect"
+				lobby_client.server_url = "wss://scriptedlobby.blazium.app/connect"
 				#lobby_client.server_url = "ws://localhost:8080/connect"
 			if !lobby_client.connect_to_lobby():
 				write_result("Connect Error")
