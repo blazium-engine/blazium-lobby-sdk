@@ -37,7 +37,7 @@ text = "+ Create User"
 
 [node name="ChangeScene" type="Button" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Change to Authoritative Lobby"
+text = "Change to Scripted Lobby"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="ScrollContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)

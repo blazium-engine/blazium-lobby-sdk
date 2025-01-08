@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-@onready var lobby_client : AuthoritativeLobbyClient = $AuthoritativeLobbyClient
+@onready var lobby_client : ScriptedLobbyClient = $ScriptedLobbyClient
 @onready var message_text := $VBoxContainer/Message
 @onready var message_text2 := $VBoxContainer/Message2
 @onready var message_text3 := $VBoxContainer2/Message
@@ -165,7 +165,7 @@ func _on_button_pressed() -> void:
 			if message3 != "":
 				lobby_client.server_url = message3
 			else:
-				lobby_client.server_url = "wss://authlobby.blazium.app/connect"
+				lobby_client.server_url = "wss://scriptedlobby.blazium.app/connect"
 				#lobby_client.server_url = "ws://localhost:8080/connect"
 			if !lobby_client.connect_to_lobby():
 				write_result("Connect Error")
@@ -262,7 +262,7 @@ func _on_button_pressed() -> void:
 			else:
 				write_result("Tags Result %s: Success" % get_index())
 		"lobby_call":
-			var result :AuthoritativeLobbyResult = await lobby_client.lobby_call(message, parse_json_or_empty(message2)).finished
+			var result :ScriptedLobbyResult = await lobby_client.lobby_call(message, parse_json_or_empty(message2)).finished
 			if result.has_error():
 				write_result("Lobby Call Error %s: %s" % [get_index(), result.error])
 			else:
