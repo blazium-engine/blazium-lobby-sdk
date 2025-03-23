@@ -50,7 +50,7 @@ func received_lobby_data(data: Dictionary, is_private: bool):
 	if is_private:
 		write_result("Private data %s" % lobby_client.host_data)
 
-func lobby_notified(data: String, from_peer: LobbyPeer):
+func lobby_notified(data: Dictionary, from_peer: LobbyPeer):
 	write_result("Callback: %s [b]lobby_notified[/b] data %s from_peer %s" % [get_index(), data, from_peer.id])
 
 func lobbies_listed(lobbies: Array[LobbyInfo]):
@@ -313,13 +313,13 @@ func _on_button_pressed() -> void:
 			else:
 				write_result("Delete Peers Data %s: Success" % get_index())
 		"notify_lobby":
-			var result :LobbyResult = await lobby_client.notify_lobby(message).finished
+			var result :LobbyResult = await lobby_client.notify_lobby(JSON.parse_string(message)).finished
 			if result.has_error():
 				write_result("Lobby Notify Lobby Error %s: %s" % [get_index(), result.error])
 			else:
 				write_result("Lobby Notify Lobby Result %s: Success" % get_index())
 		"notify_peer":
-			var result :LobbyResult = await lobby_client.notify_peer(message, message2).finished
+			var result :LobbyResult = await lobby_client.notify_peer(JSON.parse_string(message), message2).finished
 			if result.has_error():
 				write_result("Lobby Notify Peer Error %s: %s" % [get_index(), result.error])
 			else:

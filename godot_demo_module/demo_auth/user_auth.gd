@@ -50,7 +50,7 @@ func lobbies_listed(lobbies: Array[LobbyInfo]):
 	for lobby in lobbies:
 		write_result("Callback: %s [b]lobbies_listed[/b] id %s name %s" % [get_index(), lobby.id, lobby.lobby_name])
 
-func lobby_notified(data: String):
+func lobby_notified(data: Dictionary):
 	write_result("Callback: %s [b]lobby_notified[/b] data %s" % [get_index(), data])
 
 func lobby_created(lobby: LobbyInfo, peers: Array[LobbyPeer]):
