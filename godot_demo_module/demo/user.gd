@@ -10,8 +10,8 @@ extends HBoxContainer
 @export var result_text: RichTextLabel
 
 func _ready() -> void:
-	lobby_client.connected_to_lobby.connect(connected_to_lobby)
-	lobby_client.disconnected_from_lobby.connect(disconnected_from_lobby)
+	lobby_client.connected_to_server.connect(connected_to_server)
+	lobby_client.disconnected_from_server.connect(disconnected_from_server)
 	lobby_client.lobby_notified.connect(lobby_notified)
 	lobby_client.lobbies_listed.connect(lobbies_listed)
 	lobby_client.received_peer_data.connect(received_peer_data)
@@ -34,11 +34,11 @@ func write_result(text):
 func log_updated(command: String, logs: String):
 	logs_text.text = command + " " + logs
 
-func connected_to_lobby(peer: LobbyPeer, reconnection_token: String):
-	write_result("Callback: %s [b]connected_to_lobby[/b] peer_id [color=blue]%s[/color] user_name %s peer_ready %s reconnection_token [color=green]%s[/color]" % [get_index(), peer.id, peer.user_data.get("name", ""), peer.ready, reconnection_token])
+func connected_to_server(peer: LobbyPeer, reconnection_token: String):
+	write_result("Callback: %s [b]connected_to_server[/b] peer_id [color=blue]%s[/color] user_name %s peer_ready %s reconnection_token [color=green]%s[/color]" % [get_index(), peer.id, peer.user_data.get("name", ""), peer.ready, reconnection_token])
 
-func disconnected_from_lobby(reason: String):
-	write_result("Callback: %s [b]disconnected_from_lobby[/b] reason %s reconnect_token [color=green]%s[/color]" % [get_index(), reason, lobby_client.reconnection_token])
+func disconnected_from_server(reason: String):
+	write_result("Callback: %s [b]disconnected_from_server[/b] reason %s reconnect_token [color=green]%s[/color]" % [get_index(), reason, lobby_client.reconnection_token])
 
 func received_peer_data(data: Dictionary, to_peer: LobbyPeer, is_private: bool):
 	write_result("Callback: %s [b]received_peer_data[/b] data %s to_peer [color=blue]%s[/color] is_private %s" % [get_index(), data, to_peer.id, is_private])
@@ -50,7 +50,7 @@ func received_lobby_data(data: Dictionary, is_private: bool):
 	if is_private:
 		write_result("Private data %s" % lobby_client.host_data)
 
-func lobby_notified(data: String, from_peer: LobbyPeer):
+func lobby_notified(data: Dictionary, from_peer: LobbyPeer):
 	write_result("Callback: %s [b]lobby_notified[/b] data %s from_peer %s" % [get_index(), data, from_peer.id])
 
 func lobbies_listed(lobbies: Array[LobbyInfo]):
@@ -99,11 +99,11 @@ func _on_command_toggle_item_selected(index: int) -> void:
 	message_text3.placeholder_text = ""
 	message_text4.placeholder_text = ""
 	match item:
-		"connect_to_lobby":
+		"connect_to_server":
 			message_text.placeholder_text = "Reconnection Token:"
 			message_text2.placeholder_text = "Game ID Override:"
 			message_text3.placeholder_text = "Server URL Override:"
-		"disconnect_from_lobby":
+		"disconnect_from_server":
 			pass
 		"create_lobby":
 			message_text.placeholder_text = "Title:"
@@ -183,7 +183,7 @@ func _on_button_pressed() -> void:
 	var message3 = message_text3.text
 	var message4 = message_text4.text
 	match item:
-		"connect_to_lobby":
+		"connect_to_server":
 			lobby_client.reconnection_token = message
 			if message2 != "":
 				lobby_client.game_id = message2
@@ -194,12 +194,12 @@ func _on_button_pressed() -> void:
 			else:
 				lobby_client.server_url = "wss://lobby.blazium.app/connect"
 				#lobby_client.server_url = "ws://localhost:8080/connect"
-			if !lobby_client.connect_to_lobby():
+			if !lobby_client.connect_to_server():
 				write_result("Connect Error")
 			else:
 				write_result("Connecting")
-		"disconnect_from_lobby":
-			lobby_client.disconnect_from_lobby()
+		"disconnect_from_server":
+			lobby_client.disconnect_from_server()
 		"create_lobby":
 			var result : ViewLobbyResult = await lobby_client.create_lobby(message, false, parse_json_or_empty(message4), int(message3), message2).finished
 			if result.has_error():
@@ -313,13 +313,13 @@ func _on_button_pressed() -> void:
 			else:
 				write_result("Delete Peers Data %s: Success" % get_index())
 		"notify_lobby":
-			var result :LobbyResult = await lobby_client.notify_lobby(message).finished
+			var result :LobbyResult = await lobby_client.notify_lobby(JSON.parse_string(message)).finished
 			if result.has_error():
 				write_result("Lobby Notify Lobby Error %s: %s" % [get_index(), result.error])
 			else:
 				write_result("Lobby Notify Lobby Result %s: Success" % get_index())
 		"notify_peer":
-			var result :LobbyResult = await lobby_client.notify_peer(message, message2).finished
+			var result :LobbyResult = await lobby_client.notify_peer(JSON.parse_string(message), message2).finished
 			if result.has_error():
 				write_result("Lobby Notify Peer Error %s: %s" % [get_index(), result.error])
 			else:

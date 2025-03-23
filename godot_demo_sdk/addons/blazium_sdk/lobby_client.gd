@@ -109,7 +109,7 @@ func _ready():
 	set_process(false)
 
 ## Connect to a Blazium Lobby Server using a [game_id]. The default [lobby_url] is wss://lobby.blazium.app and it connects to the free Blazium Lobby server.
-func connect_to_lobby(gameID: String) -> bool:
+func connect_to_server(gameID: String) -> bool:
 	var lobby_url = server_url
 	var err = _socket.connect_to_url(lobby_url + "?gameID=" + gameID)
 	if err != OK:
@@ -117,7 +117,7 @@ func connect_to_lobby(gameID: String) -> bool:
 		set_process(false)
 		return false
 	set_process(true)
-	append_log.emit("connect_to_lobby", "Connected to lobby server at " + _socket.get_requested_url())
+	append_log.emit("connect_to_server", "Connected to lobby server at " + _socket.get_requested_url())
 	return true
 
 var _counter := 0
