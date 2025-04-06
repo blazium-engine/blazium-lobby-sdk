@@ -161,7 +161,7 @@ func _on_button_pressed() -> void:
 			if message2 != "":
 				lobby_client.game_id = message2
 			else:
-				lobby_client.game_id = "echo"
+				lobby_client.game_id = "00000000-0000-0000-0000-000000000001"
 			if message3 != "":
 				lobby_client.server_url = message3
 			else:
