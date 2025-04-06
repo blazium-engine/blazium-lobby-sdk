@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://detlob8in37l7"]
 
-[ext_resource type="Script" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
+[ext_resource type="Script" uid="uid://xk3r28alm16w" path="res://demo_auth/user_auth.gd" id="1_rjot1"]
 
-[sub_resource type="LobbyInfo" id="LobbyInfo_updyy"]
+[sub_resource type="LobbyInfo" id="LobbyInfo_anyfr"]
 
-[sub_resource type="LobbyPeer" id="LobbyPeer_s4n65"]
+[sub_resource type="LobbyPeer" id="LobbyPeer_mmbga"]
 
 [node name="User" type="HBoxContainer"]
 size_flags_horizontal = 3
@@ -87,8 +87,8 @@ editable = false
 
 [node name="ScriptedLobbyClient" type="ScriptedLobbyClient" parent="."]
 game_id = "echo"
-lobby = SubResource("LobbyInfo_updyy")
-peer = SubResource("LobbyPeer_s4n65")
+lobby = SubResource("LobbyInfo_anyfr")
+peer = SubResource("LobbyPeer_mmbga")
 
 [connection signal="item_selected" from="CommandToggle" to="." method="_on_command_toggle_item_selected"]
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
